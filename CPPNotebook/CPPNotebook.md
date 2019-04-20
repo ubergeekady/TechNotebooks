@@ -115,3 +115,117 @@ int solarPanels [2][3];
 int solarPanels [2][3] = {{0, 1, 2}, {3, 4, 5}};
 ```
 
+
+
+## Operators to Increment (**++**) and Decrement (**—**)
+
+It’s important to first understand the difference between prefix and postfix and then use the one that works for you. The result of execution of the postfix operators is that the l-value is first assigned the r-value and after that assignment the r-value is incremented (or decremented). This means that in all cases where a postfix operator has been used, the value of num2 is the old value of num1 (the value before the increment or decrement operation).Prefix operators have exactly the opposite in behavior. The r-value is first incremented and then assigned to the l-value. In these cases, num2 and num1 carry the same value. Listing 5.2 demonstrates the effect of prefix and postfix increment and decrement opera- tors on a sample integer. 
+
+
+
+## Program Flow
+
+```
+while(condition){
+  //execute
+}
+
+
+
+for ( init; condition; increment ) {
+   statement(s);
+}
+
+
+
+do {
+   statement(s);
+} while( condition );
+
+
+
+
+switch (n)
+{
+    case 1: // code to be executed if n = 1;
+        break;
+    case 2: // code to be executed if n = 2;
+        break;
+    default: // code to be executed if n doesn't match any cases
+}
+
+
+
+
+if (condition) {
+// condition Statement 1; Statement 2;
+} else {
+// condition Statement 3; Statement 4;
+}
+
+
+
+(conditional expression evaluated to bool) ? expression1 if true : expression2 if false;
+```
+
+
+
+## The Range-Based **for** Loop (C++11)
+
+```
+for (VarType varName : sequence) {
+	// Use varName that contains an element from sequence
+}
+```
+
+```c++
+#include <iostream>
+using namespace std;
+
+int main(){
+    int myNumbers [5] = {1,2,3,4,5};
+    for(int i : myNumbers){
+        cout << i;
+    }
+}
+```
+
+
+
+## Functions
+
+Functions with the same name and return type but with different parameters or set of parameters are said to be overloaded functions.
+
+```c++
+double Area(double radius);
+double Area(double radius, double height);
+```
+
+There are cases where you might need a function to work on a variable that modifies a value that is avail- able outside the function, too, say in the calling function. This is when you declare a parameter that takes an argument *by reference*.
+
+```c++
+// output parameter result by reference 
+void Area(double radius, double& result) 
+{
+	result = Pi * radius * radius;
+}
+```
+
+
+
+## Pointers
+
+*Refer to C Notes*
+
+
+
+## Reference
+
+A reference is an alias for a variable. When you declare a reference, you need to initialize it to a variable. Thus, the reference variable is just a different way to access the data stored in the variable being referenced. You would declare a reference using the reference operator (&) as seen in the following statement:
+
+```c++
+VarType original = Value;
+VarType& ReferenceVariable = original;
+```
+
+References enable you to work with the memory location they are initialized to. This makes references particularly useful when programming functions.
