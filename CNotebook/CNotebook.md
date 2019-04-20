@@ -1,10 +1,6 @@
-
-
 ## Table Of Contents
 
 [TOC]
-
-
 
 ## Comments
 
