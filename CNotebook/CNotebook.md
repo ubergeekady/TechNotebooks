@@ -1,7 +1,3 @@
----
-typora-copy-images-to: ../../../Desktop/screen1.png
----
-
 ## **Comments**
 
 ```c
