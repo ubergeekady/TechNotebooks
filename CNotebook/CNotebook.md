@@ -15,17 +15,69 @@ typora-copy-images-to: ../../../Desktop/screen1.png
 
 ## Constants
 
+In C, apart from keywords everything in the C program is treated as Identifier. Identifier can be the names given to variables, constants, functions and user-defined data.
+
 You define constants with define tells the compiler to replace MYNAME with what is provided
 
 ```c
 #define MYNAME "Aditya Singh"
 ```
 
+The const keyword specifies that a variable or object value is constant and can’t be modified at the compilation time.
+
+```c
+const int num = 1; 
+```
+
+Enumerations also (*later*)
+
+Static variables have a property of preserving their value even after they are out of their scope!Hence, static variables preserve their previous value in their previous scope and are not initialized again in the new scope. For example, we can use static int to count number of times a function is called, but an auto variable can’t be used for this purpose. A static int variable remains in memory while the program is running. A normal or auto variable is destroyed when a function call where the variable was declared is over.
+
+```c
+static int i = 10;
+```
+
+Static variables are allocated memory in data segment, not stack segment. Static variables (like global variables) are initialized as 0 if not initialized explicitly. For example in the below program, value of x is printed as 0, while value of y is something garbage.
+
+```c
+#include <stdio.h> 
+int main() 
+{ 
+    static int x; 
+    int y; 
+    printf("%d \n %d", x, y); 
+}
+```
+
+In C, static variables can only be initialized using constant literals. For example, following program fails in compilation.
+
+```c
+#include<stdio.h> 
+int initializer(void) 
+{ 
+    return 50; 
+} 
+   
+int main() 
+{ 
+    static int i = initializer(); 
+    printf(" value of i = %d", i); 
+    getchar(); 
+    return 0; 
+} 
+```
+
+Please note that this condition doesn’t hold in C++
+
 
 
 ## Variables
 
-Variables are boxes in memory that save important data. A variable name must start with a letter, but then can contain numbers, letters or underscores
+Variables are boxes in memory that save important data. A variable name must start with a letter, but then can contain numbers, letters or underscores.
+
+In C, variables are always statically (or lexically) scoped i.e., binding of a variable can be determined by program text and is independent of the run-time function call stack. If an inner block declares a variable with the same name as the variable declared by the outer block, then the visibility of the outer block variable ends at the pint of declaration by inner block. A variabled declared in a block can only be accessed inside the block and all inner blocks of this block. 
+
+C allows a global variable to be declared again when first declaration doesn’t initialize the variable.
 
 **Char**
 
@@ -69,139 +121,13 @@ double reallyBigPi = 3.1415926535897932384626433832795028841971;
 
 C99 has bool. Earlier version had only 0/1.
 
-**Enumerated Types** : Enumeration (or enum) is a user defined data type in C. It is mainly used to assign names to integral constants, the names make a program easy to read and maintain.
+**Typedef**
 
 ```c
-enum State {Working = 1, Failed = 0}; 
-
-// The name of enumeration is "flag" and the constant
-// are the values of the flag. By default, the values
-// of the constants are as follows:
-// constant1 = 0, constant2 = 1, constant3 = 2 and 
-// so on.
-enum flag{constant1, constant2, constant3, ....... };
-
-
-
-// In both of the below cases, "day" is 
-// defined as the variable of type week. 
-
-enum week{Mon, Tue, Wed};
-enum week day;
-
-// Or
-
-enum week{Mon, Tue, Wed}day;
-
-
--------------------
-  
-  // An example program to demonstrate working 
-// of enum in C 
-#include<stdio.h> 
-  
-enum week{Mon, Tue, Wed, Thur, Fri, Sat, Sun}; 
-  
-int main() 
-{ 
-    enum week day; 
-    day = Wed; 
-    printf("%d",day); 
-    return 0; 
-}
-
-//Output - 2
-
-
-
--------------
-  
-// Another example program to demonstrate working 
-// of enum in C 
-#include<stdio.h> 
-  
-enum year{Jan, Feb, Mar, Apr, May, Jun, Jul,  
-          Aug, Sep, Oct, Nov, Dec}; 
-  
-int main() 
-{ 
-   int i; 
-   for (i=Jan; i<=Dec; i++)       
-      printf("%d ", i); 
-        
-   return 0; 
-}
-
-// Output -> 0 1 2 3 4 5 6 7 8 9 10 11
-
--------------------
-
-
-```
-
-**Interesting facts about initialization of enum.**
-
-**1.** Two enum names can have same value. For example, in the following C program both ‘Failed’ and ‘Freezed’ have same value 0.
-
-```c
-#include <stdio.h> 
-enum State {Working = 1, Failed = 0, Freezed = 0}; 
-  
-int main() 
-{ 
-   printf("%d, %d, %d", Working, Failed, Freezed); 
-   return 0; 
-}
-
-//1,0,0
-```
-
-**2.** If we do not explicitly assign values to enum names, the compiler by default assigns values starting from 0. For example, in the following C program, sunday gets value 0, monday gets 1, and so on.
-
-```c
-#include <stdio.h> 
-enum day {sunday, monday, tuesday, wednesday, thursday, friday, saturday}; 
-  
-int main() 
-{ 
-    enum day d = thursday; 
-    printf("The day number stored in d is %d", d); 
-    return 0; 
-} 
-
-//The day number stored in d is 4
-```
-
-**3.** We can assign values to some name in any order. All unassigned names get value as value of previous name plus one.
-
-```c
-#include <stdio.h> 
-enum day {sunday = 1, monday, tuesday = 5, 
-          wednesday, thursday = 10, friday, saturday}; 
-  
-int main() 
-{ 
-    printf("%d %d %d %d %d %d %d", sunday, monday, tuesday, 
-            wednesday, thursday, friday, saturday); 
-    return 0; 
-}
-
-//1 2 5 6 10 11 12
-```
-
-**4.** The value assigned to enum names must be some integeral constant, i.e., the value must be in range from minimum possible integer value to maximum possible integer value.
-
-**5.** All enum constants must be unique in their scope. For example, the following program fails in compilation.
-
-```c
-enum state  {working, failed}; 
-enum result {failed, passed}; 
-  
-int main()  { return 0; } 
-```
-
-```
-Compile Error: 'failed' has a previous declaration as 'state failed'
+// using typedef to give a short name to long long int  
+// very convenient to use now due to the short name 
+typedef long long int LL;
+LL c = 1000000;
 ```
 
 
@@ -303,7 +229,69 @@ Variables of type double provide 15 decimal digits precision.
 Variables of type long double provide 18 decimal digits precision. 
 ```
 
- 			 		
+
+
+```c
+// How much space are data types taking up?
+#include <stdio.h>
+
+int main(void){
+     printf("Variables of type char occupy %u bytes\n", sizeof(char));
+     printf("Variables of type short occupy %u bytes\n", sizeof(short));
+     printf("Variables of type int occupy %u bytes\n", sizeof(int));
+     printf("Variables of type long occupy %u bytes\n", sizeof(long));
+     printf("Variables of type long long occupy %u bytes\n", sizeof(long long));
+     printf("Variables of type float occupy %u bytes\n", sizeof(float));
+     printf("Variables of type double occupy %u bytes\n", sizeof(double));
+     printf("Variables of type long double occupy %u bytes\n", sizeof(long double));
+     return 0;
+}
+```
+
+```c
+Variables of type char occupy 1 bytes
+Variables of type short occupy 2 bytes
+Variables of type int occupy 4 bytes
+Variables of type long occupy 8 bytes
+Variables of type long long occupy 8 bytes
+Variables of type float occupy 4 bytes
+Variables of type double occupy 8 bytes
+Variables of type long double occupy 16 bytes
+```
+
+
+
+## Functions
+
+Function declaration tells compiler about number of parameters function takes, data-types of parameters and return type of function. Putting parameter names in function declaration is optional in function declaration, but it is necessary to put them in definition.
+
+```c
+// A function that takes two integers as parameters 
+// and returns an integer 
+int max(int, int);
+```
+
+In C, parameters are always passed by value. However, in C, we can use pointers to get the effect of pass by reference.
+
+Every function has a return type. If a function doesn’t return any value, then void is used as return type.Moreover if the return type of the function is void ,we still can use return statement in the body of function definition by not specifying any constant,variable,etc. with it ,by only mentioning the ‘return;’ statement which would symbolise the termination of the function
+
+ In C, functions can return any type except arrays and functions. We can get around this limitation by returning pointer to array or pointer to function.
+
+
+
+
+
+
+
+**Static Functions**
+
+In C, functions are global by default. The “*static*” keyword before a function name makes it static. For example, below function *fun()* is static. Unlike global functions in C, access to static functions is restricted to the file where they are declared. Therefore, when we want to restrict access to functions, we make them static. Another reason for making functions static can be reuse of the same function name in other files.
+
+```
+static int fun(void) 
+```
+
+
 
 ## Console Input/Output
 
@@ -490,34 +478,6 @@ You can change printf with a conditional operator directly
 ```c
 int numOfProducts = 10;
 printf("I bought %s products\n\n",(numOfProducts > 1) ? "many" : "one");
-```
-
-```c
-// How much space are data types taking up?
-#include <stdio.h>
-
-int main(void){
-     printf("Variables of type char occupy %u bytes\n", sizeof(char));
-     printf("Variables of type short occupy %u bytes\n", sizeof(short));
-     printf("Variables of type int occupy %u bytes\n", sizeof(int));
-     printf("Variables of type long occupy %u bytes\n", sizeof(long));
-     printf("Variables of type long long occupy %u bytes\n", sizeof(long long));
-     printf("Variables of type float occupy %u bytes\n", sizeof(float));
-     printf("Variables of type double occupy %u bytes\n", sizeof(double));
-     printf("Variables of type long double occupy %u bytes\n", sizeof(long double));
-     return 0;
-}
-```
-
-```c
-Variables of type char occupy 1 bytes
-Variables of type short occupy 2 bytes
-Variables of type int occupy 4 bytes
-Variables of type long occupy 8 bytes
-Variables of type long long occupy 8 bytes
-Variables of type float occupy 4 bytes
-Variables of type double occupy 8 bytes
-Variables of type long double occupy 16 bytes
 ```
 
 
@@ -907,4 +867,157 @@ int main(){
 
 }
 ```
+
+
+
+## Enumerated Types
+
+Enumeration (or enum) is a user defined data type in C. It is mainly used to assign names to integral constants, the names make a program easy to read and maintain.
+
+```c
+enum State {Working = 1, Failed = 0}; 
+
+// The name of enumeration is "flag" and the constant
+// are the values of the flag. By default, the values
+// of the constants are as follows:
+// constant1 = 0, constant2 = 1, constant3 = 2 and 
+// so on.
+enum flag{constant1, constant2, constant3, ....... };
+
+
+
+// In both of the below cases, "day" is 
+// defined as the variable of type week. 
+
+enum week{Mon, Tue, Wed};
+enum week day;
+
+// Or
+
+enum week{Mon, Tue, Wed}day;
+
+
+-------------------
+  
+  // An example program to demonstrate working 
+// of enum in C 
+#include<stdio.h> 
+  
+enum week{Mon, Tue, Wed, Thur, Fri, Sat, Sun}; 
+  
+int main() 
+{ 
+    enum week day; 
+    day = Wed; 
+    printf("%d",day); 
+    return 0; 
+}
+
+//Output - 2
+
+
+
+-------------
+  
+// Another example program to demonstrate working 
+// of enum in C 
+#include<stdio.h> 
+  
+enum year{Jan, Feb, Mar, Apr, May, Jun, Jul,  
+          Aug, Sep, Oct, Nov, Dec}; 
+  
+int main() 
+{ 
+   int i; 
+   for (i=Jan; i<=Dec; i++)       
+      printf("%d ", i); 
+        
+   return 0; 
+}
+
+// Output -> 0 1 2 3 4 5 6 7 8 9 10 11
+
+-------------------
+
+
+```
+
+**Interesting facts about initialization of enum.**
+
+**1.** Two enum names can have same value. For example, in the following C program both ‘Failed’ and ‘Freezed’ have same value 0.
+
+```c
+#include <stdio.h> 
+enum State {Working = 1, Failed = 0, Freezed = 0}; 
+  
+int main() 
+{ 
+   printf("%d, %d, %d", Working, Failed, Freezed); 
+   return 0; 
+}
+
+//1,0,0
+```
+
+**2.** If we do not explicitly assign values to enum names, the compiler by default assigns values starting from 0. For example, in the following C program, sunday gets value 0, monday gets 1, and so on.
+
+```c
+#include <stdio.h> 
+enum day {sunday, monday, tuesday, wednesday, thursday, friday, saturday}; 
+  
+int main() 
+{ 
+    enum day d = thursday; 
+    printf("The day number stored in d is %d", d); 
+    return 0; 
+} 
+
+//The day number stored in d is 4
+```
+
+**3.** We can assign values to some name in any order. All unassigned names get value as value of previous name plus one.
+
+```c
+#include <stdio.h> 
+enum day {sunday = 1, monday, tuesday = 5, 
+          wednesday, thursday = 10, friday, saturday}; 
+  
+int main() 
+{ 
+    printf("%d %d %d %d %d %d %d", sunday, monday, tuesday, 
+            wednesday, thursday, friday, saturday); 
+    return 0; 
+}
+
+//1 2 5 6 10 11 12
+```
+
+**4.** The value assigned to enum names must be some integeral constant, i.e., the value must be in range from minimum possible integer value to maximum possible integer value.
+
+**5.** All enum constants must be unique in their scope. For example, the following program fails in compilation.
+
+```c
+enum state  {working, failed}; 
+enum result {failed, passed}; 
+  
+int main()  { return 0; } 
+```
+
+```
+Compile Error: 'failed' has a previous declaration as 'state failed'
+```
+
+
+
+
+
+
+
+
+
+
+
+## Other useful links
+
+Memory Layout: <https://www.geeksforgeeks.org/memory-layout-of-c-program/>
 
