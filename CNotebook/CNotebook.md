@@ -1,4 +1,12 @@
-## **Comments**
+
+
+## Table Of Contents
+
+[TOC]
+
+
+
+## Comments
 
 ```c
 /* This is a multi-line comment
@@ -67,7 +75,7 @@ Please note that this condition doesn’t hold in C++
 
 
 
-## Variables
+## Data Types & Variables
 
 Variables are boxes in memory that save important data. A variable name must start with a letter, but then can contain numbers, letters or underscores.
 
@@ -125,8 +133,6 @@ C99 has bool. Earlier version had only 0/1.
 typedef long long int LL;
 LL c = 1000000;
 ```
-
-
 
 **String**
 
@@ -273,9 +279,59 @@ Every function has a return type. If a function doesn’t return any value, then
 
  In C, functions can return any type except arrays and functions. We can get around this limitation by returning pointer to array or pointer to function.
 
+With GCC family of C compilers, we can mark some functions to execute before and after main().
 
+```c
+void myStartupFun (void) __attribute__ ((constructor)); 
+void myCleanupFun (void) __attribute__ ((destructor)); 
+  
+void myStartupFun (void) 
+{ 
+    printf ("startup code before main()\n"); 
+} 
+  
+void myCleanupFun (void) 
+{ 
+    printf ("cleanup code after main()\n"); 
+} 
+  
+int main (void) 
+{ 
+    printf ("hello\n"); 
+    return 0; 
+} 
+```
 
+C supports variable numbers of arguments. But there is no language provided way for finding out total number of arguments passed.
 
+```c
+#include <stdio.h> 
+fun(int x) 
+{ 
+    return x*x; 
+} 
+```
+
+The important thing to note is, there is no return type for fun(), the program still compiles and runs fine in most of the C compilers. In C, if we do not specify a return type, compiler assumes an implicit return type as int. However, C99 standard doesn’t allow return type to be omitted even if return type is int. This was allowed in older C standard C89. In C++, the above program is not valid except few old C++ compilers like Turbo C++. Every function should specify the return type in C++.
+
+```
+“The identifier __func__ shall be implicitly declared by the translator as if, immediately following the opening brace of each function definition, the declaration
+
+static const char __func__[] = “function-name”;
+```
+
+```c
+#include <stdio.h>
+  
+int main() 
+{ 
+   printf("In file:%s, function:%s() and line:%d",__FILE__,__func__,__LINE__); 
+   return 0; 
+}
+
+//output
+//In file:test.c, function:main() and line:5
+```
 
 
 
@@ -1013,7 +1069,24 @@ Compile Error: 'failed' has a previous declaration as 'state failed'
 
 
 
-## Other useful links
+## Misc Stuff
 
 Memory Layout: <https://www.geeksforgeeks.org/memory-layout-of-c-program/>
 
+<https://www.geeksforgeeks.org/understanding-exit-abort-and-assert/>
+
+https://www.geeksforgeeks.org/return-statement-vs-exit-in-main/
+Variable number of arguments in C
+Function overloading 
+
+<https://www.geeksforgeeks.org/exit-vs-_exit-c-cpp/>
+
+<https://www.geeksforgeeks.org/callbacks-in-c/>
+
+<https://www.geeksforgeeks.org/parameter-passing-techniques-in-c-cpp/>
+
+<https://www.geeksforgeeks.org/power-function-cc/>
+
+<https://www.geeksforgeeks.org/tolower-function-in-c/>
+
+<https://www.geeksforgeeks.org/time-function-in-c/>
