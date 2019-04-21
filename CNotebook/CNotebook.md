@@ -1,7 +1,3 @@
-## Table Of Contents
-
-[TOC]
-<!-- TOC -->
 ## Comments
 
 ```c
@@ -10,6 +6,14 @@
  
 // Single line comment
 ```
+
+
+
+## Preprocessor
+
+When we use include directive,  the contents of included header file (after preprocessing) are copied to the current file. Angular brackets < and > instruct the preprocessor to look in the standard folder where all header files are held.  Double quotes “ and “ instruct the preprocessor to look into the current folder (current directory). When we use define for a constant, the preprocessor produces a C program where the defined constant is searched and matching tokens are replaced with the given expression.
+
+The macros can take function like arguments, the arguments are not checked for data type. For example, the following macro INCREMENT(x) can be used for x of any data type.
 
 
 
@@ -87,6 +91,30 @@ A char can hold any of 256 single characters. All characters are surrounded by a
 char firstLetter = 'D';
 ```
 
+As already known character known character range is between -128 to 127 or 0 to 255. This point has to be kept in mind while doing character arithmetic.
+
+```c
+// C program to demonstrate character arithmetic. 
+#include <stdio.h> 
+  
+int main() 
+{ 
+    char ch1 = 125, ch2 = 10; 
+    ch1 = ch1 + ch2; 
+    printf("%d\n", ch1); 
+    printf("%c\n", ch1 - ch2 - 4); 
+    return 0; 
+}
+
+//Output
+//-121
+//y 
+```
+
+So %d specifier causes an integer value to be printed and %c specifier causes a character value to printed. But care has to taken that while using %c specifier the integer value should not exceed 127.
+
+
+
 **Integer**
 
 An int can contain any whole number positive or negative between -32,768 and 32,767
@@ -111,6 +139,40 @@ A float is a number with a decimal positive or negative
 float piValue = 3.14159265359;
 ```
 
+**Comparison of a float with a value in C**
+
+```c
+#include<stdio.h> 
+int main() 
+{ 
+    float x = 0.1; 
+    if (x == 0.1) 
+        printf("IF"); 
+    else if (x == 0.1f) 
+        printf("ELSE IF"); 
+    else
+        printf("ELSE"); 
+}
+// The output of above program is “ELSE IF” which means the expression “x == 0.1” returns //false and expression “x == 0.1f” returns true.
+```
+
+```c
+#include<stdio.h> 
+int main() 
+{ 
+   float x = 0.1; 
+   printf("%d %d %d", sizeof(x), sizeof(0.1), sizeof(0.1f)); 
+   return 0; 
+} 
+
+// The output of above program is "4 8 4" on a typical C compiler.
+// It actually prints size of float, size of double and size of float.
+```
+
+
+
+
+
 **Double**
 
 A double is used when you need a number bigger then float
@@ -119,7 +181,15 @@ A double is used when you need a number bigger then float
 double reallyBigPi = 3.1415926535897932384626433832795028841971;
 ```
 
-C99 has bool. Earlier version had only 0/1.
+**Bool**: C99 has bool. Earlier version had only 0/1.
+
+**double** has 2x more precision then **float**.
+
+**float** is a 32 bit IEEE 754 single precision Floating Point Number1 bit for the sign, (8 bits for the exponent, and 23* for the value), i.e. float has 7 decimal digits of precision.
+
+**double** is a 64 bit IEEE 754 double precision Floating Point Number (1 bit for the sign, 11 bits for the exponent, and 52* bits for the value), i.e. double has 15 decimal digits of precision.
+
+
 
 **Typedef**
 
@@ -140,10 +210,6 @@ char myName[13] = "Aditya Singh";
 char myName[] = "Aditya Singh";
 ```
 
-![screen1](screen1.png)
-
- 			 				 					
-
 Here are some declarations for variables of these types: 
 
 ```c
@@ -152,9 +218,7 @@ int house_number;
 long long star_count;
 ```
 
-Some kinds of data are always positive, the number of pebbles on a beach for example. In such cases you don’t need to provide for negative values. For each type that stores signed integers, there is a corresponding type that stores unsigned integers, and the unsigned type occupies the same amount of memory as the signed type. Each unsigned type name is essentially the signed type name prefixed with the keyword unsigned.   	
-
-![screen2](screen2.png)			 			 		
+Some kinds of data are always positive, the number of pebbles on a beach for example. In such cases you don’t need to provide for negative values. For each type that stores signed integers, there is a corresponding type that stores unsigned integers, and the unsigned type occupies the same amount of memory as the signed type. Each unsigned type name is essentially the signed type name prefixed with the keyword unsigned.   	 			 		
 
 With a given number of bits, the number of different values that can be represented is fixed. A 32-bit integer variable can represent any of 4,294,967,296 different values. Thus, using an unsigned type doesn’t provide more values than the corresponding signed type, but it does allow numbers to be represented that are twice the magnitude. 
 
@@ -169,9 +233,21 @@ To declare and initialize the variable Big_Number, you could write this:
 long Big_Number = 1287600L;
 ```
 
-![screen3](screen3.png)
-
-![screen4](screen4.png)
+|       DATA TYPE        | MEMORY (BYTES) |              RANGE              | FORMAT SPECIFIER |
+| :--------------------: | :------------: | :-----------------------------: | :--------------: |
+|       short int        |       2        |        -32,768 to 32,767        |       %hd        |
+|   unsigned short int   |       2        |           0 to 65,535           |       %hu        |
+|      unsigned int      |       4        |       0 to 4,294,967,295        |        %u        |
+|          int           |       4        | -2,147,483,648 to 2,147,483,647 |        %d        |
+|        long int        |       4        | -2,147,483,648 to 2,147,483,647 |       %ld        |
+|   unsigned long int    |       4        |       0 to 4,294,967,295        |       %lu        |
+|     long long int      |       8        |       -(2^63) to (2^63)-1       |       %lld       |
+| unsigned long long int |       8        | 0 to 18,446,744,073,709,551,615 |       %llu       |
+|      signed char       |       1        |           -128 to 127           |        %c        |
+|     unsigned char      |       1        |            0 to 255             |        %c        |
+|         float          |       4        |                                 |        %f        |
+|         double         |       8        |                                 |       %lf        |
+|      long double       |       12       |                                 |       %Lf        |
 
 Of course, it may be important to be able to determine within a program exactly what the limits are on the values that can be stored by a given integer type. As I mentioned earlier, the limits.h header file defines symbols that represent values for the limits for each type.
 
@@ -258,6 +334,10 @@ Variables of type long double occupy 16 bytes
 ```
 
 
+
+## Literals
+
+[Later]
 
 ## Functions
 
@@ -530,7 +610,7 @@ printf("I bought %s products\n\n",(numOfProducts > 1) ? "many" : "one");
 
 
 
-## Type Casting
+## Type Conversions
 
 ```c
 //Explicit type casting
@@ -543,7 +623,57 @@ int main(void){
 }
 ```
 
+Some data types like *char* , *short int* take less number of bytes than *int*, these data types are automatically promoted to *int* or *unsigned int* when an operation is performed on them. This is called integer promotion. For example no arithmetic calculation happens on smaller types like *char*, *short* and *enum*. They are first converted to *int* or *unsigned int*, and then arithmetic is done on them. If an *int* can represent all values of the original type, the value is converted to an *int* . Otherwise, it is converted to an *unsigned int.*
 
+A type cast is basically a conversion from one type to another. There are two types of type conversion:
+
+ **Implicit Type Conversion** Also known as ‘automatic type conversion’. 
+
+- Done by the compiler on its own, without any external trigger from the user.
+
+- Generally takes place when in an expression more than one data type is present. In such condition type conversion (type promotion) takes place to avoid lose of data.
+
+- All the data types of the variables are upgraded to the data type of the variable with largest data type.
+
+- ```c
+  bool -> char -> short int -> int -> 
+         unsigned int -> long -> unsigned -> 
+         long long -> float -> double -> long double
+  ```
+
+- It is possible for implicit conversions to lose information, signs can be lost (when signed is implicitly converted to unsigned), and overflow can occur (when long long is implicitly converted to float).
+
+
+
+```c
+// An example of implicit conversion 
+#include<stdio.h> 
+int main() 
+{ 
+    int x = 10;    // integer x 
+    char y = 'a';  // character c 
+  
+    // y implicitly converted to int. ASCII  
+    // value of 'a' is 97 
+    x = x + y; 
+     
+    // x is implicitly converted to float 
+    float z = x + 1.0; 
+  
+    printf("x = %d, z = %f", x, z); 
+    return 0; 
+} 
+
+//x = 107, z = 108.000000
+```
+
+
+
+This process is also called type casting and it is user defined. Here the user can type cast the result to make it of a particular data type.
+
+```
+(type) expression
+```
 
 
 
@@ -1075,6 +1205,10 @@ https://www.geeksforgeeks.org/return-statement-vs-exit-in-main/
 Variable number of arguments in C
 Function overloading 
 
+More on Storage Classes
+
+More on static variables
+
 <https://www.geeksforgeeks.org/exit-vs-_exit-c-cpp/>
 
 <https://www.geeksforgeeks.org/callbacks-in-c/>
@@ -1086,3 +1220,7 @@ Function overloading
 <https://www.geeksforgeeks.org/tolower-function-in-c/>
 
 <https://www.geeksforgeeks.org/time-function-in-c/>
+
+<https://www.geeksforgeeks.org/character-arithmetic-c-c/>
+
+<https://www.geeksforgeeks.org/need-long-data-type-c-cpp/>
