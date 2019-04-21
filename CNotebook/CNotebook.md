@@ -1197,30 +1197,12 @@ Compile Error: 'failed' has a previous declaration as 'state failed'
 
 ## Misc Stuff
 
-Memory Layout: <https://www.geeksforgeeks.org/memory-layout-of-c-program/>
+Memory Layout
 
-<https://www.geeksforgeeks.org/understanding-exit-abort-and-assert/>
-
-https://www.geeksforgeeks.org/return-statement-vs-exit-in-main/
 Variable number of arguments in C
+
 Function overloading 
 
 More on Storage Classes
 
 More on static variables
-
-<https://www.geeksforgeeks.org/exit-vs-_exit-c-cpp/>
-
-<https://www.geeksforgeeks.org/callbacks-in-c/>
-
-<https://www.geeksforgeeks.org/parameter-passing-techniques-in-c-cpp/>
-
-<https://www.geeksforgeeks.org/power-function-cc/>
-
-<https://www.geeksforgeeks.org/tolower-function-in-c/>
-
-<https://www.geeksforgeeks.org/time-function-in-c/>
-
-<https://www.geeksforgeeks.org/character-arithmetic-c-c/>
-
-<https://www.geeksforgeeks.org/need-long-data-type-c-cpp/>
