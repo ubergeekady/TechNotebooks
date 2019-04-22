@@ -748,7 +748,14 @@ char wholeName[12] = "Aditya Singh";
 You can also define an array one element at a time. If you don’t initialize an array at all, its elements, like uninitialized ordinary variables, get garbage values, but if you partially initialize an array, the remaining elements are set to 0.  				 			 		
 
 ```c
-int primeNums[3] = {2, 3, 5,};
+int primeNums[3] = {2, 3, 5};
+```
+
+```c
+// Shorthand
+// These lines are same
+int array[10] = {1, 1, 1, 1, 0, 0, 2, 2, 2, 2}; 
+int array[10] = {[0 ... 3]1, [6 ... 9]2};
 ```
 
 You don't need to define the size if you define the values up front
@@ -771,7 +778,7 @@ int matrix[3][2] = {{2,3},{4,5},{6,7}} //Row-wise grouping
 //matrix[2][0]:6 matrix[2][1]:7	
 ```
 
-Like most other languages the first number in an array is put in the zero index
+Like most other languages the first number in an array is put in the zero index. There is no index out of bound checking in C. Also, In C, it is not compiler error to initialize an array with more elements than specified size. The program won’t compile in C++.
 
 ```c
 printf("The first prime in the list is %d\n\n", primeNums[0]);
@@ -854,7 +861,7 @@ strlcpy(yourCity, "El Pueblo del la Reina de Los Angeles", sizeof(yourCity));
 printf("The new name is %s\n\n", yourCity);
 ```
 
-
+The C99 standard allows variable sized arrays (see this). But, unlike the normal arrays, variable sized arrays cannot be initialized.
 
 ## Pointers
 
@@ -1104,6 +1111,12 @@ int main(){
 
 o char array[] = “abc” sets the first four elements in array to ‘a’, ‘b’, ‘c’, and ‘\0’
 o char *pointer = “abc” sets pointer to the address of the “abc” string (which may be stored in read-only memory and thus unchangeable)
+
+![https://www.geeksforgeeks.org/wp-content/uploads/CommonArticleDesign18-min.png]()
+
+
+
+
 
 ## Enumerated Types
 
@@ -1382,11 +1395,11 @@ How are unions used ?
 
 ## Library Functions
 
-strlen, strcpy, strcmp, isalpha, isdigit 
+strcat, strlen, strcpy, strcmp, isalpha, isdigit 
 
 
 
-## Other Stuff
+## Other Topics
 
 Memory Layout of a C Program
 
@@ -1404,4 +1417,4 @@ Volatile Qualifier
 
 Difference between C and C++ structures.
 
-Function pointer
+Function pointers
