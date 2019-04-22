@@ -337,13 +337,15 @@ Please note that this condition doesn’t hold in C++
 
 
 
-## 
-
 
 
 ## Literals
 
 [Later]
+
+
+
+
 
 ## Functions
 
@@ -431,7 +433,7 @@ static int fun(void)
 
 Most all C function names contain no uppercase letters. 
 
-printf() prints to screen the string inside of quotes
+printf() prints to screen the string inside of quotes. It returns the number of characters printed. Negative value on error.
 
 ```c
 printf("Hello World \n");
@@ -477,7 +479,7 @@ You can't assign a new value to a char array you would use strcpy for that
 strcpy(myName, "Bob Smith");
 ```
 
-scanf() is used to get input from the user. You must use the & ampersand before the variable unless you're using %s
+scanf() is used to get input from the user. You must use the & ampersand before the variable unless you're using %s . Returns the total number of characters scanned.
 
 ```c
 char middleInitial;
@@ -507,7 +509,13 @@ printf("Birth Date %d/%d/%d\n\n", month, day, year);
 
 ## Math & Logic Operations
 
-+, -, *, /, and sometimes % (% only with ints)
+- **Arithmetic Operator**s (+, -, *, /, %, post-increment, pre-increment, post-decrement, pre-decrement)
+- **Relational Operators** (==, !=, >, <, >= & <=) Logical Operators (&&, || and !)
+- **Bitwise Operators** (&, |, ^, ~, >> and <<)
+- **Assignment Operator**s (=, +=, -=, *=, etc)
+- **Other Operators** (conditional, comma, sizeof, address, redirecton)
+
+In C, data type of result of comparison operations is int. Whereas in C++, type of results of comparison operations is bool.
 
 ```c
 int num1 = 12, num2 = 15, numAns;
@@ -614,6 +622,8 @@ int numOfProducts = 10;
 printf("I bought %s products\n\n",(numOfProducts > 1) ? "many" : "one");
 ```
 
+**Increment and Decrement** : The **‘++’** operator is used to increment the value of an integer. When placed before the variable name (also called pre-increment operator), its value is incremented instantly. For example, **++x**. And when it is placed after the variable name (also called post-increment operator), its value is preserved temporarily until the execution of this statement and it gets updated before the execution of the next statement. For example, **x++**.
+
 
 
 ## Type Conversions
@@ -672,8 +682,6 @@ int main()
 
 //x = 107, z = 108.000000
 ```
-
-
 
 This process is also called type casting and it is user defined. Here the user can type cast the result to make it of a particular data type.
 
@@ -734,7 +742,7 @@ switch (n)
 We have already taken a look at arrays when we stored strings in a character array. An int array is the same type of thing, and array that stores ints. An array can only store elements of the same data type
 
 ```c
-char wholeName[12] = "Derek Banas";
+char wholeName[12] = "Aditya Singh";
 ```
 
 You can also define an array one element at a time. If you don’t initialize an array at all, its elements, like uninitialized ordinary variables, get garbage values, but if you partially initialize an array, the remaining elements are set to 0.  				 			 		
@@ -1374,7 +1382,7 @@ How are unions used ?
 
 ## Library Functions
 
-
+strlen, strcpy, strcmp, isalpha, isdigit 
 
 
 
