@@ -691,19 +691,6 @@ This process is also called type casting and it is user defined. Here the user c
 
 
 
-## Bit, Byte etc.
-
-```To write more about this```
-
-What is a byte, bit, etc ? A Bit is short for Binary Digit and can be either a 1 or 0. A Byte is generally considered to be 8 Bits
-
-```c
-int bigInt = 2147483648;
-printf("I'm bigger then you may have heard %d\n\n", bigInt);
-```
-
-
-
 ## Looping
 
 ```
