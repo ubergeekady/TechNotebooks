@@ -35,46 +35,6 @@ const int num = 1;
 
 Enumerations also (*later*)
 
-Static variables have a property of preserving their value even after they are out of their scope!Hence, static variables preserve their previous value in their previous scope and are not initialized again in the new scope. For example, we can use static int to count number of times a function is called, but an auto variable can’t be used for this purpose. A static int variable remains in memory while the program is running. A normal or auto variable is destroyed when a function call where the variable was declared is over.
-
-```c
-static int i = 10;
-```
-
-Static variables are allocated memory in data segment, not stack segment. Static variables (like global variables) are initialized as 0 if not initialized explicitly. For example in the below program, value of x is printed as 0, while value of y is something garbage.
-
-```c
-#include <stdio.h> 
-int main() 
-{ 
-    static int x; 
-    int y; 
-    printf("%d \n %d", x, y); 
-}
-```
-
-In C, static variables can only be initialized using constant literals. For example, following program fails in compilation.
-
-```c
-#include<stdio.h> 
-int initializer(void) 
-{ 
-    return 50; 
-} 
-   
-int main() 
-{ 
-    static int i = initializer(); 
-    printf(" value of i = %d", i); 
-    getchar(); 
-    return 0; 
-} 
-```
-
-Please note that this condition doesn’t hold in C++
-
-
-
 ## Data Types & Variables
 
 Variables are boxes in memory that save important data. A variable name must start with a letter, but then can contain numbers, letters or underscores.
@@ -332,6 +292,52 @@ Variables of type float occupy 4 bytes
 Variables of type double occupy 8 bytes
 Variables of type long double occupy 16 bytes
 ```
+
+
+
+## Static Variables
+
+Static variables have a property of preserving their value even after they are out of their scope!Hence, static variables preserve their previous value in their previous scope and are not initialized again in the new scope. For example, we can use static int to count number of times a function is called, but an auto variable can’t be used for this purpose. A static int variable remains in memory while the program is running. A normal or auto variable is destroyed when a function call where the variable was declared is over.
+
+```c
+static int i = 10;
+```
+
+Static variables are allocated memory in data segment, not stack segment. Static variables (like global variables) are initialized as 0 if not initialized explicitly. For example in the below program, value of x is printed as 0, while value of y is something garbage.
+
+```c
+#include <stdio.h> 
+int main() 
+{ 
+    static int x; 
+    int y; 
+    printf("%d \n %d", x, y); 
+}
+```
+
+In C, static variables can only be initialized using constant literals. For example, following program fails in compilation.
+
+```c
+#include<stdio.h> 
+int initializer(void) 
+{ 
+    return 50; 
+} 
+   
+int main() 
+{ 
+    static int i = initializer(); 
+    printf(" value of i = %d", i); 
+    getchar(); 
+    return 0; 
+} 
+```
+
+Please note that this condition doesn’t hold in C++
+
+
+
+## 
 
 
 
@@ -890,6 +896,20 @@ int main(){
 }
 ```
 
+What is the output of the following program ?
+
+```c
+#include<stdio.h> 
+int main() 
+{ 
+  char *ptr = "aditya"; 
+  printf("%c\n", *&*&*ptr); 
+
+  getchar(); 
+  return 0; 
+}
+```
+
 Pointer arithmetic
 
 All types of arithmetic operations are not possible with pointers. The only valid operations that can be performed are as follows - Addition and subtraction of an integer to a pointer and increment/decrement operation.
@@ -940,9 +960,13 @@ int main(){
 
 **Pointers to arrays**
 
+For example, if we have an array named val then **val** and **&val[0]** can be used interchangeably.
+
 Address of element at index i  : &a[i] or a+i
 
 Value of element at index i  : a[i] or *(a+i)
+
+For multidimensional arrays, In general, nums(i)(j) is equivalent to *(*(nums+i)+j)
 
 ```c
 #include <stdio.h>
@@ -976,6 +1000,24 @@ int main(){
 		printf("%d\n",a[i]);
 	}
 }
+```
+
+In C, array parameters are treated as pointers. The following two definitions of foo() look different, but to the compiler they mean exactly the same thing. It’s preferable to use whichever syntax is more accurate for readability. If the pointer coming in really is the base address of a whole array, then we should use [ ]. **Array parameters treated as pointers because of efficiency**. It is inefficient to copy the array data in terms of both memory and time; and most of the times, when we pass an array our intention is to just tell the array we interested in, not to create a copy of the array.
+
+```c
+void foo(int arr_param[])  
+{ 
+  
+  /* Silly but valid. Just changes the local pointer */
+  arr_param = NULL;  
+} 
+  
+void foo(int *arr_param)  
+{ 
+  
+  /* ditto */
+  arr_param = NULL;  
+} 
 ```
 
 How to store strings ?
@@ -1013,6 +1055,12 @@ int main(){
 }
 ```
 
+A void pointer is a pointer that has no associated data type with it. A void pointer can hold address of any type and can be typcasted to any type. malloc() and calloc() return void * type and this allows these functions to be used to allocate memory of any data type (just because of void *) . The C standard doesn’t allow pointer arithmetic with void pointers. However, in GNU C it is allowed by considering the size of void is 1. For example the following program compiles and runs fine in gcc.
+
+```c
+int *x = malloc(sizeof(int) * n);
+```
+
 
 
 ## More on Arrays, Pointers and Strings
@@ -1046,7 +1094,8 @@ int main(){
 }
 ```
 
-
+o char array[] = “abc” sets the first four elements in array to ‘a’, ‘b’, ‘c’, and ‘\0’
+o char *pointer = “abc” sets pointer to the address of the “abc” string (which may be stored in read-only memory and thus unchangeable)
 
 ## Enumerated Types
 
@@ -1187,6 +1236,135 @@ Compile Error: 'failed' has a previous declaration as 'state failed'
 
 
 
+## Struct
+
+A structure is a user defined data type in C/C++. A structure creates a data type that can be used to group items of possibly different types into a single type. A structure variable can either be declared with structure declaration or as a separate declaration like basic types.
+
+```c
+// A variable declaration with structure declaration. 
+struct Point 
+{ 
+   int x, y; 
+} p1;  // The variable p1 is declared with 'Point' 
+  
+  
+// A variable declaration like basic data types 
+struct Point 
+{ 
+   int x, y; 
+};  
+  
+int main() 
+{ 
+   struct Point p1;  // The variable p1 is declared like a normal variable 
+}
+```
+
+Note: In C++, the struct keyword is optional before in declaration of a variable. In C, it is mandatory.
+
+Structure members **can be** initialized using curly braces ‘{}’. For example, following is a valid initialization.
+
+```c
+int main() 
+{ 
+   // A valid initialization. member x gets value 0 and y 
+   // gets value 1.  The order of declaration is followed. 
+   struct Point p1 = {0, 1};  
+}
+```
+
+Structure members are accessed using dot (.) operator. Like other primitive data types, we can create an array of structures.
+
+```c
+// Create an array of structures 
+struct Point arr[10]; 
+
+// Access array members 
+arr[0].x = 10; 
+arr[0].y = 20;
+```
+
+Like primitive types, we can have pointer to a structure. If we have a pointer to structure, members are accessed using arrow ( -> ) operator.
+
+```c
+struct Point p1 = {1, 2}; 
+
+// p2 is a pointer to structure p1 
+struct Point *p2 = &p1; 
+
+// Accessing structure members using structure pointer 
+printf("%d %d", p2->x, p2->y); 
+return 0;
+```
+
+And what about size of “name[0]”. In gcc, when we create an array of zero length, it is considered as array of incomplete type that’s why gcc reports its size as “0” bytes. This technique is known as “Stuct Hack”. When we create array of zero length inside structure, it must be (and only) last member of structure. Shortly we will see how to use it. “Struct Hack” technique is used to create variable length member in a structure. In the above structure, string length of “name” is not fixed, so we can use “name” as variable length array.
+
+```c
+struct employee *e = malloc(sizeof(*e) + sizeof(char) * 128); 
+```
+
+Equivalent to
+
+```c
+struct employee 
+{ 
+    int     emp_id; 
+    int     name_len; 
+    char    name[128]; /* character array of size 128 */
+}; 
+```
+
+```c
+e->emp_id 	= 100;
+e->name_len	= strlen("Geeks For Geeks");
+strncpy(e->name, "Geeks For Geeks", e->name_len);
+```
+
+When we allocate memory as given above, compiler will allocate memory to store “emp_id” and “name_len” plus contiguous memory to store “name”. When we use this technique, gcc guaranties that, “name” will get contiguous memory.
+
+When we allocate memory as given above, compiler will allocate memory to store “emp_id” and “name_len” plus contiguous memory to store “name”. When we use this technique, gcc guaranties that, “name” will get contiguous memory.
+
+Obviously there are other ways to solve problem, one is we can use character pointer. But there is no guarantee that character pointer will get contiguous memory, and we can take advantage of this contiguous memory. For example, by using this technique, we can allocate and deallocate memory by using single malloc and free call (because memory is contagious). Other advantage of this is, suppose if we want to write data, we can write whole data by using single “write()” call. e.g.
+
+## Union
+
+Like Structures, union is a user defined data type. In union, all members share the same memory location. For example in the following C program, both x and y share the same location. If we change x, we can see the changes being reflected in y. Size of a union is taken according the size of largest member in union.
+
+```c
+#include <stdio.h> 
+  
+// Declaration of union is same as structures 
+union test { 
+    int x, y; 
+}; 
+  
+int main() 
+{ 
+    // A union variable t 
+    union test t; 
+  
+    t.x = 2; // t.y also gets value 2 
+    printf("After making x = 2:\n x = %d, y = %d\n\n", 
+           t.x, t.y); 
+  
+    t.y = 10; // t.x is also updated to 10 
+    printf("After making y = 10:\n x = %d, y = %d\n\n", 
+           t.x, t.y); 
+    return 0; 
+} 
+```
+
+```
+After making x = 2:
+ x = 2, y = 2
+
+After making y = 10:
+ x = 10, y = 10
+```
+
+Like structures, we can have pointers to unions and can access members using the arrow operator (->). The following example demonstrates the same.
+
+How are unions used ?
 
 
 
@@ -1194,10 +1372,15 @@ Compile Error: 'failed' has a previous declaration as 'state failed'
 
 
 
+## Library Functions
 
-## Misc Stuff
 
-Memory Layout
+
+
+
+## Other Stuff
+
+Memory Layout of a C Program
 
 Variable number of arguments in C
 
@@ -1206,3 +1389,11 @@ Function overloading
 More on Storage Classes
 
 More on static variables
+
+Volatile Qualifier
+
+'register' keyword
+
+Difference between C and C++ structures.
+
+Function pointer
