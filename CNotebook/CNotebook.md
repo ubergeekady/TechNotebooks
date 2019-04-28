@@ -15,17 +15,17 @@ When we use include directive,  the contents of included header file (after prep
 
 The macros can take function like arguments, the arguments are not checked for data type. For example, the following macro INCREMENT(x) can be used for x of any data type.
 
-
-
-## Constants
-
-In C, apart from keywords everything in the C program is treated as Identifier. Identifier can be the names given to variables, constants, functions and user-defined data.
-
 You define constants with define tells the compiler to replace MYNAME with what is provided
 
 ```c
 #define MYNAME "Aditya Singh"
 ```
+
+
+
+## Constants
+
+In C, apart from keywords everything in the C program is treated as Identifier. Identifier can be the names given to variables, constants, functions and user-defined data.
 
 The const keyword specifies that a variable or object value is constant and can’t be modified at the compilation time.
 
@@ -33,7 +33,7 @@ The const keyword specifies that a variable or object value is constant and can�
 const int num = 1; 
 ```
 
-Enumerations also (*later*)
+Enumerations (*later*)
 
 ## Data Types & Variables
 
@@ -45,7 +45,7 @@ C allows a global variable to be declared again when first declaration doesn’t
 
 **Char**
 
-A char can hold any of 256 single characters. All characters are surrounded by apostrophes ' If you save a number as a char it can't be used for calculating
+A char can hold any of 256 single characters. All characters are surrounded by apostrophes ' If you save a number as a char it can't be used for calculating.
 
 ```c
 char firstLetter = 'D';
@@ -73,7 +73,21 @@ int main()
 
 So %d specifier causes an integer value to be printed and %c specifier causes a character value to printed. But care has to taken that while using %c specifier the integer value should not exceed 127.
 
+Signed and unsigned char both are used to store a single character. The characters are stored as per their ASCII values. For example, ‘A’ will be stored as 65 as it has value ‘65’ in the ASCII table. You don’t need to specify keyword ‘signed’ for using signed char but you need to mention keyword ‘unsigned’ for using unsigned char. ASCII table has 128 characters ranging with values from 0 to 127. The remaining 127 characters is known as extended ASCII character set. In signed char, the extended set takes value from -128 to -1 whereas in unsigned char it takes value from 128 to 255. Thus the range of signed char is -128 to 127 whereas that of unsigned char is 0 to 255. If you try to give value 128 to signed char, it will take value corresponding to the other side of the range i.e. -128. For signed char, the value next to 127 is -128 like in clock after 12 comes 1 and so on. Similar if you try to give value 256 to unsigned char, it will take value 0.
 
+```c
+signed char name = ‘a’;
+char name = ‘a’;
+```
+
+Some kinds of data are always positive, the number of pebbles on a beach for example. In such cases you don’t need to provide for negative values. For each type that stores signed integers, there is a corresponding type that stores unsigned integers, and the unsigned type occupies the same amount of memory as the signed type. Each unsigned type name is essentially the signed type name prefixed with the keyword unsigned.   	 			 		
+
+With a given number of bits, the number of different values that can be represented is fixed. A 32-bit unsigned integer variable can represent any of 4,294,967,296 different values. Thus, using an unsigned type doesn’t provide more values than the corresponding signed type, but it does allow numbers to be represented that are twice the magnitude. 
+
+```c
+unsigned int count;
+unsigned long population;		
+```
 
 **Integer**
 
@@ -113,7 +127,7 @@ int main()
     else
         printf("ELSE"); 
 }
-// The output of above program is “ELSE IF” which means the expression “x == 0.1” returns //false and expression “x == 0.1f” returns true.
+//The output of above program is “ELSE IF” which means the expression “x == 0.1” returns //false and expression “x == 0.1f” returns true.
 ```
 
 ```c
@@ -128,10 +142,6 @@ int main()
 // The output of above program is "4 8 4" on a typical C compiler.
 // It actually prints size of float, size of double and size of float.
 ```
-
-
-
-
 
 **Double**
 
@@ -149,8 +159,6 @@ double reallyBigPi = 3.1415926535897932384626433832795028841971;
 
 **double** is a 64 bit IEEE 754 double precision Floating Point Number (1 bit for the sign, 11 bits for the exponent, and 52* bits for the value), i.e. double has 15 decimal digits of precision.
 
-
-
 **Typedef**
 
 ```c
@@ -158,33 +166,6 @@ double reallyBigPi = 3.1415926535897932384626433832795028841971;
 // very convenient to use now due to the short name 
 typedef long long int LL;
 LL c = 1000000;
-```
-
-**String**
-
-To create a String you instead create char arrays Every char array has a \0 String Terminator as the last character, so always make your char arrays at least 1 character longer then you need
-
-```c
-char myName[13] = "Aditya Singh";
-//OR
-char myName[] = "Aditya Singh";
-```
-
-Here are some declarations for variables of these types: 
-
-```c
-short shoe_size;
-int house_number;
-long long star_count;
-```
-
-Some kinds of data are always positive, the number of pebbles on a beach for example. In such cases you don’t need to provide for negative values. For each type that stores signed integers, there is a corresponding type that stores unsigned integers, and the unsigned type occupies the same amount of memory as the signed type. Each unsigned type name is essentially the signed type name prefixed with the keyword unsigned.   	 			 		
-
-With a given number of bits, the number of different values that can be represented is fixed. A 32-bit integer variable can represent any of 4,294,967,296 different values. Thus, using an unsigned type doesn’t provide more values than the corresponding signed type, but it does allow numbers to be represented that are twice the magnitude. 
-
-```c
-unsigned int count;
-unsigned long population;		
 ```
 
 To declare and initialize the variable Big_Number, you could write this:
@@ -295,9 +276,13 @@ Variables of type long double occupy 16 bytes
 
 
 
-## Static Variables
+## Scoping & Storage Classes
 
-Static variables have a property of preserving their value even after they are out of their scope!Hence, static variables preserve their previous value in their previous scope and are not initialized again in the new scope. For example, we can use static int to count number of times a function is called, but an auto variable can’t be used for this purpose. A static int variable remains in memory while the program is running. A normal or auto variable is destroyed when a function call where the variable was declared is over.
+The variables which are declared inside the function, compound statement (or block) are called Local variables.
+
+
+
+Static variables have a property of preserving their value even after they are out of their scope! Hence, static variables preserve their previous value in their previous scope and are not initialized again in the new scope. For example, we can use static int to count number of times a function is called, but an auto variable can’t be used for this purpose. A static int variable remains in memory while the program is running. A normal or auto variable is destroyed when a function call where the variable was declared is over.
 
 ```c
 static int i = 10;
@@ -1067,6 +1052,16 @@ int *x = malloc(sizeof(int) * n);
 
 ## More on Arrays, Pointers and Strings
 
+**String**
+
+To create a String you instead create char arrays Every char array has a \0 String Terminator as the last character, so always make your char arrays at least 1 character longer then you need
+
+```c
+char myName[13] = "Aditya Singh";
+//OR
+char myName[] = "Aditya Singh";
+```
+
 A *string literal*, also termed a *string constant*, is anything enclosed in double quotation marks. The enclosed characters, plus a terminating \0 character automatically provided by the compiler, are stored in memory as a character string.
 
 Whenever a string constant is present in the program, it is stored as an array of characters in memory terminated by the null character. The string itself becomes a pointer to the first character of the array. 
@@ -1389,6 +1384,8 @@ strcat, strlen, strcpy, strcmp, isalpha, isdigit
 ## Other Topics
 
 Memory Layout of a C Program
+
+More on type casting
 
 Variable number of arguments in C
 
