@@ -1,1 +1,0 @@
-**Stanford - Programming Abstractions - CS106B**
