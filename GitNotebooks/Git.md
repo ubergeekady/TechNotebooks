@@ -47,7 +47,7 @@ USING GIT
 
 1. git config --global user.name "Derek Banas" 
 
-2. git config --global user.email derekbanas@verizon.net
+2. git config --global user.email banas@verizon.net
 
 3. git config --global core.editor "vim" # Set editor as vim
 
