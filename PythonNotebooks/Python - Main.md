@@ -858,224 +858,255 @@ print("Decrypted :", orig_message)
 ## #5 Functions
 
 ```python
-# ---------- STRING METHODS ----------
+# ---------- FUNCTION BASICS ----------
 
-# Strings have many methods we can use beyond what I covered last time
-rand_string = "   this is an important string   "
+# Functions allow use to reuse code and make the code easier
+# to understand
 
-# Delete whitespace on left
-rand_string = rand_string.lstrip()
+# To create a function type def (define) the function name
+# and then in parentheses a comma separated list of values
+# to pass if needed
 
-# Delete whitespace on right
-rand_string = rand_string.rstrip()
+def add_numbers(num_1, num2):
 
-# Delete whitespace on right and left
-rand_string = rand_string.strip()
+    # Return returns a value if needed
+    return num_1 + num2
 
-# Capitalize the 1st letter
-print(rand_string.capitalize())
+# You call the function by name followed by passing comma
+# separated values if needed and a value may or may not be
+# returned
 
-# Capitalize every letter
-print(rand_string.upper())
+print("5 + 4 =", add_numbers(5, 4))
 
-# lowercase all letters
-print(rand_string.lower())
+# ---------- FUNCTION LOCAL VARIABLES ----------
+# Any variable defined inside of a function is available only
+# in that function
 
-# Turn a list into a string and separate items with the defined
-# separator
-a_list = ["Bunch", "of", "random", "words"]
-print(" ".join(a_list))
+# ---------- EXAMPLE 1 ----------
+# Variables created in a function can't be accessed outside
+# of it
 
-# Convert a string into a list
-a_list_2 = rand_string.split()
+def assign_name():
+    name = "Doug"
 
-for i in a_list_2:
-    print(i)
+assign_name()
 
-# Count how many times a string occurs in a string
-print("How many is :", rand_string.count("is"))
+# Throws a NameError
+# print(name)
 
-# Get index of matching string
-print("Where is string :", rand_string.find("string"))
+# ---------- EXAMPLE 2 ----------
 
-# Replace a substring
-print(rand_string.replace("an ", "a kind of "))
+# You can't change a global variable even if it is passed
+# into a function
+def change_name(name):
 
-# ---------- PROBLEM : ACRONYM GENERATOR ----------
-# You will enter a string and then convert it to an acronym
-# with uppercase letters like this
-'''
-Convert to Acronym : Random Access Memory
-RAM
-'''
+    # Trying to change the global
+    name = "Mark"
 
-# Ask for a string
-orig_string = input("Convert to Acronym : ")
+# A variable defined outside of a function can't be changed
+# in the function using the above way
+name = "Tom"
 
-# Convert the string to all uppercase
-orig_string = orig_string.upper()
+# Try to change the value
+change_name(name)
 
-# Convert the string into a list
-list_of_words = orig_string.split()
+# Prints Tom even though the function tries to change it
+print(name)
 
-# Cycle through the list
-for word in list_of_words:
+# ---------- EXAMPLE 3 ----------
 
-    # Get the 1st letter of the word and eliminate the newline
-    print(word[0], end="")
+# If you want to change the value pass it back
+def change_name_2():
+    return "Mark"
 
-print()
+name = change_name_2()
 
-# ---------- MORE STRING METHODS ----------
-# For our next problem some additional string methods are going to be
-# very useful
+print(name)
 
-letter_z = "z"
-num_3 = "3"
-a_space = " "
+# ---------- EXAMPLE 4 ----------
+# You can also use the global statement to change it
 
-# Returns True if characters are letters or numbers
-# Whitespace is false
-print("Is z a letter or number :", letter_z.isalnum())
+gbl_name = "Sally"
 
-# Returns True if characters are letters
-print("Is z a letter :", letter_z.isalpha())
+def change_name_3():
+    global gbl_name
+    gbl_name = "Sammy"
 
-# Returns True if characters are numbers (Floats are False)
-print("Is 3 a number :", num_3.isdigit())
+change_name_3()
 
-# Returns True if all are lowercase
-print("Is z a lowercase :", letter_z.islower())
+print(gbl_name)
 
-# Returns True if all are uppercase
-print("Is z a uppercase :", letter_z.isupper())
+# ---------- RETURNING NONE ----------
+# If you don't return a value a function will return None
 
-# Returns True if all are spaces
-print("Is space a space :", a_space.isspace())
+def get_sum(num1, num2):
+    sum = num1 + num2
 
-# ---------- MAKE A isfloat FUNCTION ----------
-# There is no way to check if a string contains a float
-# so let's make one by defining our own function
+print(get_sum(5, 4))
 
-# Functions allow use to avoid repeating code
-# They can receive values (attributes / parameters)
-# They can return values
+# ---------- PROBLEM : SOLVE FOR X ----------
+# Make a function that receives an algebraic equation like
+# x + 4 = 9 and solve for x
+# x will always be the 1st value received and you only
+# will deal with addition
 
-# You define your function name and the names for the values
-# it receives like this
+# Receive the string and split the string into variables
+def solve_eq(equation):
+    x, add, num1, equal, num2 = equation.split()
 
-def isfloat(str_val):
-    try:
+    # Convert the strings into ints
+    num1, num2 = int(num1), int(num2)
 
-        # If the string isn't a float float() will throw a
-        # ValueError
-        float(str_val)
+    # Convert the result into a string and join (concatenate)
+    # it to the string "x = "
+    return "x = " + str(num2 - num1)
 
-        # If there is a value you want to return use return
-        return True
-    except ValueError:
-        return False
+print(solve_eq("x + 4 = 9"))
 
-pi = 3.14
+# ---------- RETURN MULTIPLE VALUES ----------
+# You can return multiple values with the return statement
 
-# We call our functions by name and pass in a value between
-# the parentheses
-print("Is Pi a Float :", isfloat(pi))
+def mult_divide(num1, num2):
+    return (num1 * num2), (num1 / num2)
 
-# ---------- PROBLEM : CAESAR'S CIPHER ----------
-# Receive a message and then encrypt it by shifting the
-# characters by a requested amount to the right
-# A becomes D, B becomes E for example
-# Also decrypt the message back again
+mult, divide = mult_divide(5, 4)
 
-# A-Z have the numbers 65-90 in unicode
-# a-z have the numbers 97-122
-# You get the unicode of a character with ord(yourLetter)
-# You convert from unicode to character with chr(yourNumber)
+print("5 * 4 =", mult)
+print("5 / 4 =", divide)
 
-# You should check if a character is a letter and if not
-# leave it as its default
+# ---------- RETURN A LIST OF PRIMES ----------
+# A prime can only be divided by 1 and itself
+# 5 is prime because 1 and 5 are its only positive factors
+# 6 is a composite because it is divisible by 1, 2, 3 and 6
 
-# Hints
-# Use isupper() to decided which unicodes to work with
-# Add the key (number of characters to shift) and if
-# bigger or smaller then the unicode for A, Z, a, or z
-# increase or decrease by 26
+# We'll receive a request for primes up to the input value
+# We'll then use a for loop and check if modulus == 0 for
+# every value up to the number to check
+# If modulus == 0 that means the number isn't prime
 
-# Receive the message to encrypt and the number of characters to shift
-message = input("Enter your message : ")
-key = int(input("How many characters should we shift (1 - 26)"))
+def isprime(num):
+    # This for loop cycles through primes from 2 to
+    # the value to check
+    for i in range(2, num):
 
-# Prepare your secret message
-secret_message = ""
+        # If any division has no remainder we know it
+        # isn't a prime number
+        if (num % i) == 0:
+            return False
+    return True
 
-# Cycle through each character in the message
-for char in message:
 
-    # If it isn't a letter then keep it as it is in the else below
-    if char.isalpha():
+def getPrimes(max_number):
 
-        # Get the character code and add the shift amount
-        char_code = ord(char)
-        char_code += key
+    # Create a list to hold primes
+    list_of_primes = []
 
-        # If uppercase then compare to uppercase unicodes
-        if char.isupper():
+    # This for loop cycles through primes from 2 to
+    # the maximum value requested
+    for num1 in range(2, max_number):
 
-            # If bigger than Z subtract 26
-            if char_code > ord('Z'):
-                char_code -= 26
+        if isprime(num1):
+            list_of_primes.append(num1)
 
-            # If smaller than A add 26
-            elif char_code < ord('A'):
-                char_code += 26
+    return list_of_primes
 
-        # Do the same for lowercase characters
-        else:
-            if char_code > ord('z'):
-                char_code -= 26
-            elif char_code < ord('a'):
-                char_code += 26
+max_num_to_check = int(input("Search for Primes up to : "))
 
-        # Convert from code to letter and add to message
-        secret_message += chr(char_code)
+list_of_primes = getPrimes(max_num_to_check)
 
-    # If not a letter leave the character as is
+for prime in list_of_primes:
+    print(prime)
+
+# ---------- UNKNOWN NUMBER OF ARGUMENTS ----------
+# We can receive an unknown number of arguments using
+# the splat (*) operator
+
+def sumAll(*args):
+
+    sum = 0
+
+    for i in args:
+        sum += i
+
+    return sum
+
+print("Sum :", sumAll(1,2,3,4))
+
+# ---------- pythontut2.py ----------
+
+# We need this module for our program
+import math
+
+# Functions allow us to avoid duplicate code in our programs
+
+# Aside from having to type code twice duplicate code is bad
+# because it requires us to change multiple blocks of code
+# if we need to make a change
+
+# ---------- OUR FUNCTIONS ----------
+
+# This routes to the correct area function
+# The name of the value passed doesn't have to match
+def get_area(shape):
+
+    # Switch to lowercase for easy comparison
+    shape = shape.lower()
+
+    if shape == "rectangle":
+        rectangle_area()
+    elif shape == "circle":
+        circle_area()
     else:
-        secret_message += char
+        print("Please enter rectangle or circle")
 
-print("Encrypted :", secret_message)
+# Create function that calculates the rectangle area
+def rectangle_area():
+    length = float(input("Enter the length : "))
+    width = float(input("Enter the width : "))
 
-# To decrypt the only thing that changes is the sign of the key
-key = -key
+    area = length * width
 
-orig_message = ""
+    print("The area of the rectangle is", area)
 
-for char in secret_message:
-    if char.isalpha():
-        char_code = ord(char)
-        char_code += key
 
-        if char.isupper():
-            if char_code > ord('Z'):
-                char_code -= 26
-            elif char_code < ord('A'):
-                char_code += 26
-        else:
-            if char_code > ord('z'):
-                char_code -= 26
-            elif char_code < ord('a'):
-                char_code += 26
+# Create function that calculates the circle area
+def circle_area():
+    radius = float(input("Enter the radius : "))
 
-        orig_message += chr(char_code)
+    area = math.pi * (math.pow(radius, 2))
 
-    else:
-        orig_message += char
+    # Format the output to 2 decimal places
+    print("The area of the circle is {:.2f}".format(area))
 
-print("Decrypted :", orig_message)
 
-# ---------- EXTRA HOMEWORK ----------
-# For homework put the duplicate code above in a function
+# ---------- END OF OUR FUNCTIONS ----------
+
+# We often place our main programming logic in a function called main
+# We create it this way
+
+def main():
+
+    # Our program will calculate the area for rectangles or circles
+
+    # Without functions we'd have to create a giant list of ifs, elifs
+
+    # Ask the user what shape they have
+    shape_type = input("Get area for what shape : ")
+
+    # Call a function that will route to the correct function
+    get_area(shape_type)
+
+    # Because of functions it is very easy to see what is happening
+    # For more detail just refer to the very short specific functions
+
+# All of the function definitions are ignored and this calls for main()
+# to execute when the program starts
+
+main()
+
+# ---------- HOMEWORK ----------
+# Add the ability to calculate the area for parallelograms,
+# rhombus, triangles, and trapezoids
 ```
 
 ## #6 Lists
@@ -1327,739 +1358,624 @@ for i in range(1, 10):
 ## #7 Recursive Functions & Dictionaries
 
 ```python
-# ---------- LEARN TO PROGRAM 6 ----------
+# ---------- LEARN TO PROGRAM 7 ----------
 
-import random
-import math
+# ---------- DICTIONARIES ----------
 
-# With lists we can refer to groups of data with 1 name
+# While lists organize data based on sequential indexes
+# Dictionaries instead use key / value pairs.
 
-# Each item in the list corresponds to a number (index)
-# just like how people have identification numbers.
-# By default the 1st item in a list has the index 0
+# A key / value pair could be
+# fName : "Derek" where fName is the key and "Derek" is
+# the value
 
-# [0 : "string"] [1 : 1.234] [2 : 28] [3 : "c"]
+# Create a Dictionary about me
+derekDict = {"fName": "Derek", "lName": "Banas", "address": "123 Main St"}
 
-# Python lists can grow in size and can contain data
-# of any type
+# Get a value with the key
+print("May name :", derekDict["fName"])
 
-randList = ["string", 1.234, 28]
+# Change a value with the key
+derekDict["address"] = "215 North St"
 
-# Create a list with range
-oneToTen = list(range(10))
+# Dictionaries may not print out in the order created
+# since they are unordered
+print(derekDict)
 
-# An awesome thing about lists is that you can use many
-# of the same functions with them that you used with strings
+# Add a new key value
+derekDict['city'] = 'Pittsburgh'
 
-# Combine lists
-randList = randList + oneToTen
+# Check if a key exists
+print("Is there a city :", "city" in derekDict)
 
-# Get the 1st item with an index
-print(randList[0])
+# Get the list of values
+print(derekDict.values())
 
-# Get the length
-print("List Length :", len(randList))
+# Get the list of keys
+print(derekDict.keys())
 
-# Slice a list to get 1st 3 items
-first3 = randList[0:3]
+# Get the key and value with items()
+for k, v in derekDict.items():
+    print(k, v)
 
-# Cycle through the list and print the index
-for i in first3:
-    print("{} : {}".format(first3.index(i), i))
+# Get gets a value associated with a key or the default
+print(derekDict.get("mName", "Not Here"))
 
-# You can repeat a list item with *
-print(first3[0] * 3)
+# Delete a key value
+del derekDict["fName"]
 
-# You can see if a list contains an item
-print("string" in first3)
+# Loop through the dictionary keys
+for i in derekDict:
+    print(i)
 
-# You can get the index of a matching item
-print("Index of string :", first3.index("string"))
+# Delete all entries
+derekDict.clear()
 
-# Find out how many times an item is in the list
-print("How many strings :", first3.count("string"))
+# List for holding Dictionaries
+employees = []
 
-# You can change a list item
-first3[0] = "New String"
+# Input employee data
+fName, lName = input("Enter Employee Name : ").split()
 
-for i in first3:
-    print("{} : {}".format(first3.index(i), i))
+employees.append({'fName': fName, 'lName': lName})
 
-# Append a value to the end of a list
-first3.append("Another")
+print(employees)
 
-# ---------- PROBLEM : CREATE A RANDOM LIST ----------
-# Generate a random list of 5 values between 1 and 9
-numList = []
-for i in range(5):
-    numList.append(random.randrange(1, 9))
 
-# ---------- SORT A LIST : BUBBLE SORT ----------
-# The Bubble sort is a way to sort a list
-# It works this way
-# 1. An outer loop decreases in size each time
-# 2. The goal is to have the largest number at the end of
-#    the list when the outer loop completes 1 cycle
-# 3. The inner loop starts comparing indexes at the beginning
-#    of the loop
-# 4. Check if list[Index] > list[Index + 1]
-# 5. If so swap the index values
-# 6. When the inner loop completes the largest number is at
-#    the end of the list
-# 7. Decrement the outer loop by 1
-
-# Create the value that will decrement for the outer loop
-# Its value is the last index in the list
-i = len(numList) - 1
-
-while i > 1:
-
-    j = 0
-
-    while j < i:
-
-        # Tracks the comparison of index values
-        print("\nIs {} > {}".format(numList[j], numList[j+1]))
-        print()
-
-        # If the value on the left is bigger switch values
-        if numList[j] > numList[j+1]:
-
-            print("Switch")
-
-            temp = numList[j]
-            numList[j] = numList[j + 1]
-            numList[j + 1] = temp
-
-        else:
-            print("Don't Switch")
-
-        j += 1
-
-        # Track changes to the list
-        for k in numList:
-            print(k, end=", ")
-        print()
-
-    print("END OF ROUND")
-
-    i -= 1
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# ---------- MORE LIST FUNCTIONS ----------
-numList = []
-for i in range(5):
-    numList.append(random.randrange(1, 9))
-
-# Sort a list
-numList.sort()
-
-# Reverse a list
-numList.reverse()
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# Insert value at index insert(index, value)
-numList.insert(5, 10)
-
-# Delete first occurrence of value
-numList.remove(10)
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# Remove item at index
-numList.pop(2)
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# ---------- LIST COMPREHENSIONS ----------
-# You can construct lists in interesting ways using
-# list comprehensions
-
-# Perform an operation on each item in the list
-
-# Create a list of even values
-evenList = [i*2 for i in range(10)]
-
-for k in evenList:
-    print(k, end=", ")
-print()
-
-# List of lists containing values to the power of
-# 2, 3, 4
-numList = [1,2,3,4,5]
-
-listOfValues = [[math.pow(m, 2), math.pow(m, 3), math.pow(m, 4)]
-                for m in numList]
-
-for k in listOfValues:
-    print(k)
-print()
-
-# Create a 10 x 10 list
-multiDList = [[0] * 10 for i in range(10)]
-
-# Change a value in the multidimensional list
-multiDList[0][1] = 10
-
-# Get the 2nd item in the 1st list
-# It may help to think of it as the 2nd item in the 1st row
-print(multiDList[0][1])
-
-# Get the 2nd item in the 2nd list
-print(multiDList[1][1])
-
-# ---------- MULTIDIMENSIONAL LIST ----------
-
-# Show how indexes work with a multidimensional list
-listTable = [[0] * 10 for i in range(10)]
-
-for i in range(10):
-
-    for j in range(10):
-        listTable[i][j] = "{} : {}".format(i, j)
-
-for i in range(10):
-
-    for j in range(10):
-        print(listTable[i][j], end=" || ")
-    print()
-
-# ---------- PROBLEM : CREATE MULTIPLICATION TABLE ----------
-# With 2 for loops fill the cells in a multidimensional
-# list with a multiplication table using values 1 - 9
+# ---------- PROBLEM : CREATE A CUSTOMER LIST ----------
+# Create an array of customer dictionaries
+# Output should look like this
 '''
-1, 2, 3, 4, 5, 6, 7, 8, 9,
-2, 4, 6, 8, 10, 12, 14, 16, 18,
-3, 6, 9, 12, 15, 18, 21, 24, 27,
-4, 8, 12, 16, 20, 24, 28, 32, 36,
-5, 10, 15, 20, 25, 30, 35, 40, 45,
-6, 12, 18, 24, 30, 36, 42, 48, 54,
-7, 14, 21, 28, 35, 42, 49, 56, 63,
-8, 16, 24, 32, 40, 48, 56, 64, 72,
-9, 18, 27, 36, 45, 54, 63, 72, 81
+Enter Customer (Yes/No) : y
+Enter Customer Name : Derek Banas
+Enter Customer (Yes/No) : y
+Enter Customer Name : Sally Smith
+Enter Customer (Yes/No) : n
+Derek Banas
+Sally Smith
 '''
 
-# Create the multidimensional list
-multTable = [[0] * 10 for i in range(10)]
+# Create customer array outside the for so it isn't local
+# to the while loop
+customers = []
 
-# This will increment for each row
-for i in range(1, 10):
+while True:
 
-    # This will increment for each item in the row
-    for j in range(1, 10):
+    # Cut off the 1st letter to cover if the user
+    # types a n or y
+    createEntry = input("Enter Customer (Yes/No) : ")
+    createEntry = createEntry[0].lower()
 
-        # Assign the value to the cell
-        multTable[i][j] = i * j
+    if createEntry == "n":
 
-# Output the data in the same way you assigned it
-for i in range(1, 10):
+        # Leave the while loop when n is entered
+        break
+    else:
 
-    for j in range(1, 10):
-        print(multTable[i][j], end=", ")
+        # Get the customer name by splitting at the space
+        fName, lName = input("Enter Customer Name : ").split()
 
-    print()
+        # Add the dictionary to the array
+        customers.append({'fName': fName, 'lName': lName})
+
+# Print out customer list
+for cust in customers:
+    print(cust['fName'], cust['lName'])
+
+# ---------- RECURSIVE FUNCTIONS ----------
+# A function that refers to itself is a recursive function
+
+# Calculating factorials is commonly done with a recursive
+# function 3! = 3 * 2 * 1
+
+def factorial(num):
+
+    # Every recursive function must contain a condition
+    # when it ceases to call itself
+    if num <= 1:
+        return 1
+    else:
+
+        result = num * factorial(num - 1)
+        return result
+
+print(factorial(4))
+
+# 1st : result = 4 * factorial(3) = 4 * 6 = 24
+# 2nd : result = 3 * factorial(2) = 3 * 2 = 6
+# 3rd : result = 2 * factorial(1) = 2 * 1 = 2
+
+# ---------- PROBLEM : CALCULATE FIBONACCI NUMBERS ----------
+# To calculate Fibonacci numbers we sum the 2 previous
+# values to calculate the next item in the list like this
+# 1, 1, 2, 3, 5, 8 ...
+
+# The Fibonacci sequence is defined by:
+# Fn = Fn-1 + Fn-2
+# Where F0 = 0 and F1 = 1
+
+'''
+Sample Run Though to Help
+print(fib(3))
+
+# 1st : result = fib(2) + fib(1) : 2 + 1
+# 2nd : result = (fib(1) + fib(0)) + (fib(0)) : 1 + 0
+# 3rd : result = fib(2) + fib(1)
+
+print(fib(4))
+
+# 1st : result = fib(3) + fib(2) : 3 + 2
+# 2nd : result = (fib(2) + fib(1)) + (fib(1) + fib(0)) : 2 + 1
+# 3rd : result = (fib(1) + fib(0)) + fib(0) : 1 + 0
+'''
+
+def fib(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+
+        result = fib(n-1) + fib(n-2)
+        return result
+
+print(fib(3))
+
+print(fib(4))
 ```
 
 ## #8 Reading/Writing Files
 
 ```python
-# ---------- LEARN TO PROGRAM 6 ----------
+# ---------- READING & WRITING TEXT ----------
 
-import random
-import math
+# The os module provides methods for file processing
+import os
 
-# With lists we can refer to groups of data with 1 name
+# We are able to store data for later use in files
 
-# Each item in the list corresponds to a number (index)
-# just like how people have identification numbers.
-# By default the 1st item in a list has the index 0
+# You can create or use an already created file with open
 
-# [0 : "string"] [1 : 1.234] [2 : 28] [3 : "c"]
+# If you use w (write) for mode then the file is
+# overwritten.
+# If you use a (append) you add to the end of the file
 
-# Python lists can grow in size and can contain data
-# of any type
+# Text is stored using unicode where numbers represent
+# all possible characters
 
-randList = ["string", 1.234, 28]
+# We start the code with with which guarantees the file
+# will be closed if the program crashes
+with open("mydata.txt", mode="w", encoding="utf-8") as myFile:
 
-# Create a list with range
-oneToTen = list(range(10))
+    # You can write to the file with write
+    # It doesn't add a newline
+    myFile.write("Some random text\nMore random text\nAnd some more")
 
-# An awesome thing about lists is that you can use many
-# of the same functions with them that you used with strings
 
-# Combine lists
-randList = randList + oneToTen
+# Open the file for reading
+# You don't have to provide a mode because it is
+# read by default
+with open("mydata.txt", encoding="utf-8") as myFile:
 
-# Get the 1st item with an index
-print(randList[0])
+    # We can read data in a few ways
+    # 1. read() reads everything into 1 string
+    # 2. readline() reads everything including the first newline
+    # 3. readlines() returns a list of every line which includes
+    # each newline
 
-# Get the length
-print("List Length :", len(randList))
+    # Use read() to get everything at once
+    print(myFile.read())
 
-# Slice a list to get 1st 3 items
-first3 = randList[0:3]
+# Find out if the file is closed
+print(myFile.closed)
 
-# Cycle through the list and print the index
-for i in first3:
-    print("{} : {}".format(first3.index(i), i))
+# Get the file name
+print(myFile.name)
 
-# You can repeat a list item with *
-print(first3[0] * 3)
+# Get the access mode of the file
+print(myFile.mode)
 
-# You can see if a list contains an item
-print("string" in first3)
+# Rename our file
+os.rename("mydata.txt", "mydata2.txt")
 
-# You can get the index of a matching item
-print("Index of string :", first3.index("string"))
+# Delete a file
+# os.remove("mydata.dat")
 
-# Find out how many times an item is in the list
-print("How many strings :", first3.count("string"))
+# Create a directory
+# os.mkdir("mydir")
 
-# You can change a list item
-first3[0] = "New String"
+# Change directories
+# os.chdir("mydir")
 
-for i in first3:
-    print("{} : {}".format(first3.index(i), i))
+# Display current directory
+print("Current Directory :", os.getcwd())
 
-# Append a value to the end of a list
-first3.append("Another")
+# Remove a directory, but 1st move back 1 directory
+# os.chdir("..")
+# os.rmdir("mydir")
 
-# ---------- PROBLEM : CREATE A RANDOM LIST ----------
-# Generate a random list of 5 values between 1 and 9
-numList = []
-for i in range(5):
-    numList.append(random.randrange(1, 9))
+# ---------- PROBLEM : Fibonacci sequence ----------
+# Previously we generated 1 number in the
+# Fibonacci sequence. This time ask the user to define
+# how many numbers they want and display them
+# The formula for calculating the Fibonacci sequence is
+# Fn = Fn-1 + Fn-2
+# Where F0 = 0 and F1 = 1
 
-# ---------- SORT A LIST : BUBBLE SORT ----------
-# The Bubble sort is a way to sort a list
-# It works this way
-# 1. An outer loop decreases in size each time
-# 2. The goal is to have the largest number at the end of
-#    the list when the outer loop completes 1 cycle
-# 3. The inner loop starts comparing indexes at the beginning
-#    of the loop
-# 4. Check if list[Index] > list[Index + 1]
-# 5. If so swap the index values
-# 6. When the inner loop completes the largest number is at
-#    the end of the list
-# 7. Decrement the outer loop by 1
-
-# Create the value that will decrement for the outer loop
-# Its value is the last index in the list
-i = len(numList) - 1
-
-while i > 1:
-
-    j = 0
-
-    while j < i:
-
-        # Tracks the comparison of index values
-        print("\nIs {} > {}".format(numList[j], numList[j+1]))
-        print()
-
-        # If the value on the left is bigger switch values
-        if numList[j] > numList[j+1]:
-
-            print("Switch")
-
-            temp = numList[j]
-            numList[j] = numList[j + 1]
-            numList[j + 1] = temp
-
-        else:
-            print("Don't Switch")
-
-        j += 1
-
-        # Track changes to the list
-        for k in numList:
-            print(k, end=", ")
-        print()
-
-    print("END OF ROUND")
-
-    i -= 1
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# ---------- MORE LIST FUNCTIONS ----------
-numList = []
-for i in range(5):
-    numList.append(random.randrange(1, 9))
-
-# Sort a list
-numList.sort()
-
-# Reverse a list
-numList.reverse()
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# Insert value at index insert(index, value)
-numList.insert(5, 10)
-
-# Delete first occurrence of value
-numList.remove(10)
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# Remove item at index
-numList.pop(2)
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# ---------- LIST COMPREHENSIONS ----------
-# You can construct lists in interesting ways using
-# list comprehensions
-
-# Perform an operation on each item in the list
-
-# Create a list of even values
-evenList = [i*2 for i in range(10)]
-
-for k in evenList:
-    print(k, end=", ")
-print()
-
-# List of lists containing values to the power of
-# 2, 3, 4
-numList = [1,2,3,4,5]
-
-listOfValues = [[math.pow(m, 2), math.pow(m, 3), math.pow(m, 4)]
-                for m in numList]
-
-for k in listOfValues:
-    print(k)
-print()
-
-# Create a 10 x 10 list
-multiDList = [[0] * 10 for i in range(10)]
-
-# Change a value in the multidimensional list
-multiDList[0][1] = 10
-
-# Get the 2nd item in the 1st list
-# It may help to think of it as the 2nd item in the 1st row
-print(multiDList[0][1])
-
-# Get the 2nd item in the 2nd list
-print(multiDList[1][1])
-
-# ---------- MULTIDIMENSIONAL LIST ----------
-
-# Show how indexes work with a multidimensional list
-listTable = [[0] * 10 for i in range(10)]
-
-for i in range(10):
-
-    for j in range(10):
-        listTable[i][j] = "{} : {}".format(i, j)
-
-for i in range(10):
-
-    for j in range(10):
-        print(listTable[i][j], end=" || ")
-    print()
-
-# ---------- PROBLEM : CREATE MULTIPLICATION TABLE ----------
-# With 2 for loops fill the cells in a multidimensional
-# list with a multiplication table using values 1 - 9
+# Sample Output
 '''
-1, 2, 3, 4, 5, 6, 7, 8, 9,
-2, 4, 6, 8, 10, 12, 14, 16, 18,
-3, 6, 9, 12, 15, 18, 21, 24, 27,
-4, 8, 12, 16, 20, 24, 28, 32, 36,
-5, 10, 15, 20, 25, 30, 35, 40, 45,
-6, 12, 18, 24, 30, 36, 42, 48, 54,
-7, 14, 21, 28, 35, 42, 49, 56, 63,
-8, 16, 24, 32, 40, 48, 56, 64, 72,
-9, 18, 27, 36, 45, 54, 63, 72, 81
+How many Fibonacci values should be found : 30
+1
+1
+2
+3
+5
+All Done
 '''
 
-# Create the multidimensional list
-multTable = [[0] * 10 for i in range(10)]
+def fib(num):
+    if num == 0:
+        return 0
+    elif num == 1:
+        return 1
+    else:
+        result = fib(num - 1) + fib(num - 2)
+        return result
 
-# This will increment for each row
-for i in range(1, 10):
+numFibValues = int(input("How many Fibonacci values should be found : "))
 
-    # This will increment for each item in the row
-    for j in range(1, 10):
+i = 1
 
-        # Assign the value to the cell
-        multTable[i][j] = i * j
+# While i is less then the number of values requested
+# continue to find more
+while i < numFibValues:
 
-# Output the data in the same way you assigned it
-for i in range(1, 10):
+    # Call the fib()
+    fibValue = fib(i)
 
-    for j in range(1, 10):
-        print(multTable[i][j], end=", ")
+    print(fibValue)
 
-    print()
+    i += 1
+
+print("All Done")
+
+
+# ---------- READ ONE LINE AT A TIME ----------
+# You can read 1 line at a time with readline()
+
+# Open the file
+with open("mydata2.txt", encoding="utf-8") as myFile:
+
+    lineNum = 1
+
+    # We'll use a while loop that loops until the data
+    # read is empty
+    while True:
+        line = myFile.readline()
+
+        # line is empty so exit
+        if not line:
+            break
+
+        print("Line", lineNum, " :", line, end="")
+
+        lineNum += 1
+
+# ---------- PROBLEM : ANALYZE THE FILE ----------
+# As you cycle through each line output the number of
+# words and average word length
+'''
+Line 1
+Number of Words : 3
+Avg Word Length : 4.7
+Line 2
+Number of Words : 3
+Avg Word Length : 4.7
+'''
+
+with open("mydata2.txt", encoding="utf-8") as myFile:
+
+    lineNum = 1
+
+    while True:
+        line = myFile.readline()
+
+        # line is empty so exit
+        if not line:
+            break
+
+        print("Line", lineNum)
+
+        # Put the words in a list using the space as
+        # the boundary between words
+        wordList = line.split()
+
+        # Get the number of words with len()
+        print("Number of Words :", len(wordList))
+
+        # Incremented for each character
+        charCount = 0
+
+        for word in wordList:
+            for char in word:
+                charCount += 1
+
+        # Divide to find the answer
+        avgNumChars = charCount/len(wordList)
+
+        # Use format to limit to 2 decimals
+        print("Avg Word Length : {:.2}".format(avgNumChars))
+
+        lineNum += 1
+
+# ---------- TUPLES ----------
+# A Tuple is like a list, but their values can't be changed
+# Tuples are surrounded with parentheses instead of
+# square brackets
+
+myTuple = (1, 2, 3, 5, 8)
+
+# Get a value with an index
+print("1st Value :", myTuple[0])
+
+# Get a slice from the 1st index up to but not including
+# the 3rd
+print(myTuple[0:3])
+
+# Get the number of items in a Tuple
+print("Tuple Length :", len(myTuple))
+
+# Join or concatenate tuples
+moreFibs = myTuple + (13, 21, 34)
+
+# Check if a value is in a Tuple
+print("34 in Tuple :", 34 in moreFibs)
+
+# Iterate through a tuple
+for i in moreFibs:
+    print(i)
+
+# Convert a List into a Tuple
+aList = [55, 89, 144]
+aTuple = tuple(aList)
+
+# Convert a Tuple into a List
+aList = list(aTuple)
+
+# Get max and minimum value
+print("Min :", min(aTuple))
+print("Max :", max(aTuple))
 ```
 
 ## #9 Object Oriented Programming
 
 ```python
-# ---------- LEARN TO PROGRAM 6 ----------
+# ---------- LEARN TO PROGRAM 9 ----------
+
+# Real world objects have attributes and capabilities
+
+# A dog for example has the attributes of height, weight
+# favorite food, etc.
+
+# It has the capability to run, bark, scratch, etc.
+
+# In object oriented programming we model real world objects
+# be defining the attributes (fields) and capabilities (methods)
+# that they have.
+
+# A class is the template used to model these objects
+# Here we will model a Dog object
+
+class Dog:
+
+    # The init method is called to create an object
+    # We give default values for the fields if none
+    # are provided
+    def __init__(self, name="", height=0, weight=0):
+
+        # self allows an object to refer to itself
+        # It is like how you refer to yourself with my
+
+        # We will take the values passed in and assign
+        # them to the new Dog objects fields (attributes)
+        self.name = name
+        self.height = height
+        self.weight = weight
+
+        # Define what happens when the Dog is asked to
+        # demonstrate its capabilities
+
+    def run(self):
+        print("{} the dog runs".format(self.name))
+
+    def eat(self):
+        print("{} the dog eats".format(self.name))
+
+    def bark(self):
+        print("{} the dog barks".format(self.name))
+
+
+def main():
+
+    # Create a new Dog object
+    spot = Dog("Spot", 66, 26)
+
+    spot.bark()
+
+    bowser = Dog()
+
+main()
+
+
+# ---------- GETTERS & SETTERS ----------
+# Getters and Setters are used to protect our objects
+# from assigning bad fields or for providing improved
+# output
+
+class Square:
+    def __init__(self, height="0", width="0"):
+        self.height = height
+        self.width = width
+
+    # This is the getter
+    @property
+    def height(self):
+        print("Retrieving the height")
+
+        # Put a __ before this private field
+        return self.__height
+
+    # This is the setter
+    @height.setter
+    def height(self, value):
+
+        # We protect the height from receiving a bad value
+        if value.isdigit():
+
+            # Put a __ before this private field
+            self.__height = value
+        else:
+            print("Please only enter numbers for height")
+
+    # This is the getter
+    @property
+    def width(self):
+        print("Retrieving the width")
+        return self.__width
+
+    # This is the setter
+    @width.setter
+    def width(self, value):
+        if value.isdigit():
+            self.__width = value
+        else:
+            print("Please only enter numbers for width")
+
+    def getArea(self):
+        return int(self.__width) * int(self.__height)
+
+
+def main():
+    aSquare = Square()
+
+    height = input("Enter height : ")
+    width = input("Enter width : ")
+
+    aSquare.height = height
+    aSquare.width = width
+
+    print("Height :", aSquare.height)
+    print("Width :", aSquare.width)
+
+    print("The Area is :", aSquare.getArea())
+
+
+main()
+
+# ---------- WARRIORS BATTLE ----------
+# We will create a game with this sample output
+'''
+Sam attacks Paul and deals 9 damage
+Paul is down to 10 health
+Paul attacks Sam and deals 7 damage
+Sam is down to 7 health
+Sam attacks Paul and deals 19 damage
+Paul is down to -9 health
+Paul has Died and Sam is Victorious
+Game Over
+'''
+
+# We will create a Warrior & Battle class
 
 import random
 import math
 
-# With lists we can refer to groups of data with 1 name
+# Warriors will have names, health, and attack and block maximums
+# They will have the capabilities to attack and block random amounts
+class Warrior:
+    def __init__(self, name="warrior", health=0, attkMax=0, blockMax=0):
+        self.name = name
+        self.health = health
+        self.attkMax = attkMax
+        self.blockMax = blockMax
 
-# Each item in the list corresponds to a number (index)
-# just like how people have identification numbers.
-# By default the 1st item in a list has the index 0
+    def attack(self):
+        # Randomly calculate the attack amount
+        # random() returns a value from 0.0 to 1.0
+        attkAmt = self.attkMax * (random.random() + .5)
 
-# [0 : "string"] [1 : 1.234] [2 : 28] [3 : "c"]
+        return attkAmt
 
-# Python lists can grow in size and can contain data
-# of any type
+    def block(self):
 
-randList = ["string", 1.234, 28]
+        # Randomly calculate how much of the attack was blocked
+        blockAmt = self.blockMax * (random.random() + .5)
 
-# Create a list with range
-oneToTen = list(range(10))
+        return blockAmt
 
-# An awesome thing about lists is that you can use many
-# of the same functions with them that you used with strings
+# The Battle class will have the capability to loop until 1 Warrior dies
+# The Warriors will each get a turn to attack each turn
 
-# Combine lists
-randList = randList + oneToTen
+class Battle:
 
-# Get the 1st item with an index
-print(randList[0])
+    def startFight(self, warrior1, warrior2):
 
-# Get the length
-print("List Length :", len(randList))
+        # Continue looping until a Warrior dies switching back and
+        # forth as the Warriors attack each other
+        while True:
+            if self.getAttackResult(warrior1, warrior2) == "Game Over":
+                print("Game Over")
+                break
 
-# Slice a list to get 1st 3 items
-first3 = randList[0:3]
+            if self.getAttackResult(warrior2, warrior1) == "Game Over":
+                print("Game Over")
+                break
 
-# Cycle through the list and print the index
-for i in first3:
-    print("{} : {}".format(first3.index(i), i))
+    # A function will receive each Warrior that will attack the other
+    # Have the attack and block amounts be integers to make the results clean
+    # Output the results of the fight as it goes
+    # If a Warrior dies return that result to end the looping in the
+    # above function
 
-# You can repeat a list item with *
-print(first3[0] * 3)
+    # Make this method static because we don't need to use self
+    @staticmethod
+    def getAttackResult(warriorA, warriorB):
+        warriorAAttkAmt = warriorA.attack()
 
-# You can see if a list contains an item
-print("string" in first3)
+        warriorBBlockAmt = warriorB.block()
 
-# You can get the index of a matching item
-print("Index of string :", first3.index("string"))
+        damage2WarriorB = math.ceil(warriorAAttkAmt - warriorBBlockAmt)
 
-# Find out how many times an item is in the list
-print("How many strings :", first3.count("string"))
+        warriorB.health = warriorB.health - damage2WarriorB
 
-# You can change a list item
-first3[0] = "New String"
+        print("{} attacks {} and deals {} damage".format(warriorA.name,
+                                                         warriorB.name, damage2WarriorB))
 
-for i in first3:
-    print("{} : {}".format(first3.index(i), i))
+        print("{} is down to {} health".format(warriorB.name,
+                                               warriorB.health))
 
-# Append a value to the end of a list
-first3.append("Another")
+        if warriorB.health <= 0:
+            print("{} has Died and {} is Victorious".format(warriorB.name,
+                                                            warriorA.name))
 
-# ---------- PROBLEM : CREATE A RANDOM LIST ----------
-# Generate a random list of 5 values between 1 and 9
-numList = []
-for i in range(5):
-    numList.append(random.randrange(1, 9))
-
-# ---------- SORT A LIST : BUBBLE SORT ----------
-# The Bubble sort is a way to sort a list
-# It works this way
-# 1. An outer loop decreases in size each time
-# 2. The goal is to have the largest number at the end of
-#    the list when the outer loop completes 1 cycle
-# 3. The inner loop starts comparing indexes at the beginning
-#    of the loop
-# 4. Check if list[Index] > list[Index + 1]
-# 5. If so swap the index values
-# 6. When the inner loop completes the largest number is at
-#    the end of the list
-# 7. Decrement the outer loop by 1
-
-# Create the value that will decrement for the outer loop
-# Its value is the last index in the list
-i = len(numList) - 1
-
-while i > 1:
-
-    j = 0
-
-    while j < i:
-
-        # Tracks the comparison of index values
-        print("\nIs {} > {}".format(numList[j], numList[j+1]))
-        print()
-
-        # If the value on the left is bigger switch values
-        if numList[j] > numList[j+1]:
-
-            print("Switch")
-
-            temp = numList[j]
-            numList[j] = numList[j + 1]
-            numList[j + 1] = temp
-
+            return "Game Over"
         else:
-            print("Don't Switch")
+            return "Fight Again"
 
-        j += 1
 
-        # Track changes to the list
-        for k in numList:
-            print(k, end=", ")
-        print()
+def main():
 
-    print("END OF ROUND")
+    # Create 2 Warriors
+    paul = Warrior("Paul", 50, 20, 10)
+    sam = Warrior("Sam", 50, 20, 10)
 
-    i -= 1
+    # Create Battle object
+    battle = Battle()
 
-for k in numList:
-    print(k, end=", ")
-print()
+    # Initiate Battle
+    battle.startFight(paul, sam)
 
-# ---------- MORE LIST FUNCTIONS ----------
-numList = []
-for i in range(5):
-    numList.append(random.randrange(1, 9))
-
-# Sort a list
-numList.sort()
-
-# Reverse a list
-numList.reverse()
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# Insert value at index insert(index, value)
-numList.insert(5, 10)
-
-# Delete first occurrence of value
-numList.remove(10)
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# Remove item at index
-numList.pop(2)
-
-for k in numList:
-    print(k, end=", ")
-print()
-
-# ---------- LIST COMPREHENSIONS ----------
-# You can construct lists in interesting ways using
-# list comprehensions
-
-# Perform an operation on each item in the list
-
-# Create a list of even values
-evenList = [i*2 for i in range(10)]
-
-for k in evenList:
-    print(k, end=", ")
-print()
-
-# List of lists containing values to the power of
-# 2, 3, 4
-numList = [1,2,3,4,5]
-
-listOfValues = [[math.pow(m, 2), math.pow(m, 3), math.pow(m, 4)]
-                for m in numList]
-
-for k in listOfValues:
-    print(k)
-print()
-
-# Create a 10 x 10 list
-multiDList = [[0] * 10 for i in range(10)]
-
-# Change a value in the multidimensional list
-multiDList[0][1] = 10
-
-# Get the 2nd item in the 1st list
-# It may help to think of it as the 2nd item in the 1st row
-print(multiDList[0][1])
-
-# Get the 2nd item in the 2nd list
-print(multiDList[1][1])
-
-# ---------- MULTIDIMENSIONAL LIST ----------
-
-# Show how indexes work with a multidimensional list
-listTable = [[0] * 10 for i in range(10)]
-
-for i in range(10):
-
-    for j in range(10):
-        listTable[i][j] = "{} : {}".format(i, j)
-
-for i in range(10):
-
-    for j in range(10):
-        print(listTable[i][j], end=" || ")
-    print()
-
-# ---------- PROBLEM : CREATE MULTIPLICATION TABLE ----------
-# With 2 for loops fill the cells in a multidimensional
-# list with a multiplication table using values 1 - 9
-'''
-1, 2, 3, 4, 5, 6, 7, 8, 9,
-2, 4, 6, 8, 10, 12, 14, 16, 18,
-3, 6, 9, 12, 15, 18, 21, 24, 27,
-4, 8, 12, 16, 20, 24, 28, 32, 36,
-5, 10, 15, 20, 25, 30, 35, 40, 45,
-6, 12, 18, 24, 30, 36, 42, 48, 54,
-7, 14, 21, 28, 35, 42, 49, 56, 63,
-8, 16, 24, 32, 40, 48, 56, 64, 72,
-9, 18, 27, 36, 45, 54, 63, 72, 81
-'''
-
-# Create the multidimensional list
-multTable = [[0] * 10 for i in range(10)]
-
-# This will increment for each row
-for i in range(1, 10):
-
-    # This will increment for each item in the row
-    for j in range(1, 10):
-
-        # Assign the value to the cell
-        multTable[i][j] = i * j
-
-# Output the data in the same way you assigned it
-for i in range(1, 10):
-
-    for j in range(1, 10):
-        print(multTable[i][j], end=", ")
-
-    print()
+main()
 ```
 
 ## #10 Inheritance Magic

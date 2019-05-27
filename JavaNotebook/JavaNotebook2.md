@@ -16,7 +16,7 @@ public class Lesson31 extends JFrame{
 		
 		// Creates a File object in memory
 		
-		randomDir = new File("/Users/derekbanas/Documents/workspace3/Java Code/Random");
+		randomDir = new File("/Users/AdityaSingh/Documents/workspace3/Java Code/Random");
 		
 		// Make a directory
 		
@@ -28,7 +28,7 @@ public class Lesson31 extends JFrame{
 		
 		// Make a file and define where to save it in the file system
 		
-		randomFile2 = new File("/Users/derekbanas/Documents/workspace3/Java Code/Random/random2.txt");
+		randomFile2 = new File("/Users/AdityaSingh/Documents/workspace3/Java Code/Random/random2.txt");
 		
 		// createNewFile and getCanonicalPath have to be called in 
 		// a try block to catch IOException
@@ -101,7 +101,7 @@ public class Lesson31 extends JFrame{
 			
 			// Changes the name of the file
 			
-			randomFile2.renameTo(new File("/Users/derekbanas/Documents/workspace3/Java Code/Random/random3.txt"));
+			randomFile2.renameTo(new File("/UsersAdityakSingh/Documents/workspace3/Java Code/Random/random3.txt"));
 			
 			// Output the full path for the file unless the path wasn't
 			// defined when the File was created
@@ -175,7 +175,7 @@ public class Lesson32{
 		
 		// PrintWriter is used to write characters to a file in this situation
 		
-		PrintWriter custOutput = createFile("/Users/derekbanas/Documents/workspace3/Java Code/src/customers.txt");
+		PrintWriter custOutput = createFile("/Users/AdityaSingh/Documents/workspace3/Java Code/src/customers.txt");
 		
 		// Enhanced for loop for arrays
 		// Cycles through all of the people in the customers array
@@ -288,7 +288,7 @@ public class Lesson32{
 		
 		// Open a new connection to the file
 		
-		File listOfNames = new File("/Users/derekbanas/Documents/workspace3/Java Code/src/customers.txt");
+		File listOfNames = new File("/UsersAdityakSingh/Documents/workspace3/Java Code/src/customers.txt");
 		
 		try {
 			
@@ -367,7 +367,7 @@ public class Lesson33{
 		// A DataOutputStream allows you to print 
 		// primitive data types to a file
 		
-		DataOutputStream custOutput = createFile("/Users/derekbanas/Documents/workspace3/Java Code/src/customers.dat");
+		DataOutputStream custOutput = createFile("/Users/AdityaSingh/Documents/workspace3/Java Code/src/customers.dat");
 		
 		// Enhanced for loop for arrays
 		// Cycles through all of the people in the customers array
@@ -521,7 +521,7 @@ public class Lesson33{
 		
 		// Open a new connection to the file
 		
-		File listOfNames = new File("/Users/derekbanas/Documents/workspace3/Java Code/src/customers.dat");
+		File listOfNames = new File("/UsersAdityakSingh/Documents/workspace3/Java Code/src/customers.dat");
 		
 		boolean eof = false;
 		
