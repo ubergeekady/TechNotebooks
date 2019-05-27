@@ -1366,50 +1366,50 @@ for i in range(1, 10):
 # Dictionaries instead use key / value pairs.
 
 # A key / value pair could be
-# fName : "Derek" where fName is the key and "Derek" is
+# fName : "Aditya" where fName is the key and "Aditya" is
 # the value
 
 # Create a Dictionary about me
-derekDict = {"fName": "Derek", "lName": "Banas", "address": "123 Main St"}
+AdityaDict = {"fName": "Aditya", "lName": "singh", "address": "123 Main St"}
 
 # Get a value with the key
-print("May name :", derekDict["fName"])
+print("May name :", AdityaDict["fName"])
 
 # Change a value with the key
-derekDict["address"] = "215 North St"
+AdityaDict["address"] = "215 North St"
 
 # Dictionaries may not print out in the order created
 # since they are unordered
-print(derekDict)
+print(AdityaDict)
 
 # Add a new key value
-derekDict['city'] = 'Pittsburgh'
+AdityaDict['city'] = 'Pittsburgh'
 
 # Check if a key exists
-print("Is there a city :", "city" in derekDict)
+print("Is there a city :", "city" in AdityaDict)
 
 # Get the list of values
-print(derekDict.values())
+print(AdityaDict.values())
 
 # Get the list of keys
-print(derekDict.keys())
+print(AdityaDict.keys())
 
 # Get the key and value with items()
-for k, v in derekDict.items():
+for k, v in AdityaDict.items():
     print(k, v)
 
 # Get gets a value associated with a key or the default
-print(derekDict.get("mName", "Not Here"))
+print(AdityaDict.get("mName", "Not Here"))
 
 # Delete a key value
-del derekDict["fName"]
+del AdityaDict["fName"]
 
 # Loop through the dictionary keys
-for i in derekDict:
+for i in AdityaDict:
     print(i)
 
 # Delete all entries
-derekDict.clear()
+AdityaDict.clear()
 
 # List for holding Dictionaries
 employees = []
@@ -1427,11 +1427,11 @@ print(employees)
 # Output should look like this
 '''
 Enter Customer (Yes/No) : y
-Enter Customer Name : Derek Banas
+Enter Customer Name : Aditya singh
 Enter Customer (Yes/No) : y
 Enter Customer Name : Sally Smith
 Enter Customer (Yes/No) : n
-Derek Banas
+Aditya singh
 Sally Smith
 '''
 
@@ -2524,10 +2524,10 @@ def random_func(name: str, age: int, weight: float) -> str:
 
     return "{} is {} years old and weighs {}".format(name, age, weight)
 
-print(random_func("Derek", 41, 165.5))
+print(random_func("Aditya", 41, 165.5))
 
 # You don't get an error if you pass bad data
-print(random_func(89, "Derek", "Turtle"))
+print(random_func(89, "Aditya", "Turtle"))
 
 # You can print the annotations
 print(random_func.__annotations__)
@@ -2694,10 +2694,10 @@ for letter in alpha:
     print(letter)
 
 # Iterate through a dictionary because it is an iterable
-derek = {"fName": "Derek", "lName": "Banas"}
+Aditya = {"fName": "Aditya", "lName": "singh"}
 
-for key in derek:
-    print(key, derek[key])
+for key in Aditya:
+    print(key, Aditya[key])
 
 # ---------- PROBLEM ----------
 # Create a class that returns values from the Fibonacci
