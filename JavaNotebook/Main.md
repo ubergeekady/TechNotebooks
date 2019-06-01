@@ -14,6 +14,7 @@ class Aditya
 		double d = 4.355453532; 
 		float f = 4.7333434f; 
 		boolean bool = true;
+    String str = "Aditya";
 		
 		System.out.println("char: " + a); 
 		System.out.println("integer: " + i); 
@@ -27,7 +28,7 @@ class Aditya
 }
 ```
 
-If you have previous programming experience, then you already know that it is fairly common to assign a value of one type to a variable of another type. If the two types are compatible, then Java will perform the conversion automatically. For example, it is always possible to assign an **int** value to a **long** variable. However, not all types are compatible, and thus, not all type conversions are implicitly allowed. For instance, there is no automatic conversion defined from **double** to **byte**. Fortunately, it is still possible to obtain a conversion between incompatible types. To do so, you must use a *cast*, which performs an explicit conversion between incompatible types. Let’s look at both automatic type conversions and casting. 
+It is fairly common to assign a value of one type to a variable of another type. If the two types are compatible, then Java will perform the conversion automatically. For example, it is always possible to assign an **int** value to a **long** variable. However, not all types are compatible, and thus, not all type conversions are implicitly allowed. For instance, there is no automatic conversion defined from **double** to **byte**. Fortunately, it is still possible to obtain a conversion between incompatible types. To do so, you must use a *cast*, which performs an explicit conversion between incompatible types. Let’s look at both automatic type conversions and casting. 
 
 **Automatic Conversions** : When one type of data is assigned to another type of variable, an *automatic type conversion* will take place if the following two conditions are met: 
 
@@ -36,9 +37,7 @@ If you have previous programming experience, then you already know that it is fa
 
 When these two conditions are met, a *widening conversion* takes place. For example, the **int** type is always large enough to hold all valid **byte** values, so no explicit cast statement is required. 
 
-For widening conversions, the numeric types, including integer and floating-point types, are compatible with each other. However, there are no automatic conversions from the numeric types to **char** or **boolean**. Also, **char** and **boolean** are not compatible with each other. 
-
-As mentioned earlier, Java also performs an automatic type conversion when storing a literal integer constant into variables of type **byte**, **short**, **long**, or **char**. 
+For widening conversions, the numeric types, including integer and floating-point types, are compatible with each other. However, there are no automatic conversions from the numeric types to **char** or **boolean**. Also, **char** and **boolean** are not compatible with each other. Java also performs an automatic type conversion when storing a literal integer constant into variables of type **byte**, **short**, **long**, or **char**. 
 
 **Casting Incompatible Types**
 
