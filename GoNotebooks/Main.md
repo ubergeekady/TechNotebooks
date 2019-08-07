@@ -1,3 +1,5 @@
+## Hello World
+
 ```go
 package main
 import "fmt"
@@ -59,6 +61,8 @@ func main(){
 If you have a local variable which is declared and not used, it will show a compile time error.
 
 **Naming**. Lowercase variables are scoped inside the package. Anything that consumes the package cannot and see and work with it. Block scoping also works.
+
+Use PascalCase for exported variables and constants and camelCase for internal.
 
 Naming convention. Use camelcase. When you use acronym, keep it uppercase. myURL. Keep more verbose variable names.
 
@@ -292,5 +296,385 @@ func main() {
 Program exited.
 ```
 
-**Runes**
+[**TODO : Runes etc**]
+
+
+
+## Constants
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	const myConst int = 23
+	fmt.Printf("%v, %T\n", myConst, myConst)
+}
+
+```
+
+Replaced by compiler at compile time. Value must be calculable at compile time.
+
+```go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func main() {
+	const myConst float64 = math.Sin(1.57)
+	fmt.Printf("%v, %T\n", myConst, myConst)
+}
+
+```
+
+```
+./prog.go:9:8: const initializer math.Sin(1.57) is not a constant
+
+Go build failed.
+```
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	const a float64 = 1.57
+	const b int = 14
+	const c bool = true
+	fmt.Printf("%v, %T\n", a, a)
+	fmt.Printf("%v, %T\n", b, b)
+	fmt.Printf("%v, %T\n", c, c)
+}
+```
+
+```
+1.57, float64
+14, int
+true, bool
+
+Program exited.
+```
+
+Collections like arrays etc. cannot be const
+
+Immutable, but can be shadowed.
+
+Can add constant to variables when they are of the same type. 
+
+The first one doesn't work, but the second one works ? Why? It literally takes the constant and replaces with the value.
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	const a int = 42
+	const b int32 = 14
+	fmt.Printf("%v, %T\n", a + b, a + b)
+}
+
+```
+
+```
+./prog.go:10:27: invalid operation: a + b (mismatched types int and int32)
+
+Go build failed.
+```
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	const a = 42
+	const b int32 = 14
+	fmt.Printf("%v, %T\n", a + b, a + b)
+}
+
+```
+
+```
+56, int32
+
+Program exited.
+```
+
+iota is enumerated constant
+
+Special symbol iota allows related constans to be created easily. Iota starts at 0 in each const block and increments by one. Watch out of constant values that match zero values for variables. 
+
+Enumerated expressions - Operations that can be dertermined at compile time are allowed - Arithmetic, Bitwise operations, Bitshifting
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+const a = iota
+
+func main() {
+	fmt.Printf("%v, %T\n", a, a)
+}
+
+```
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+const (
+	a = iota
+	b = iota
+	c = iota
+	d = iota
+)
+
+func main() {
+	fmt.Printf("%v, %T\n", a, a)
+	fmt.Printf("%v, %T\n", b, b)
+	fmt.Printf("%v, %T\n", c, c)
+	fmt.Printf("%v, %T\n", d, d)
+}
+
+```
+
+```
+0, int
+1, int
+2, int
+3, int
+
+Program exited.
+```
+
+```
+const (
+	a = iota
+	b = iota
+	c = iota
+	d = iota
+)
+```
+
+Types constants work like immutable variables. Can interoperate only with same type. Untyped constants operate like literals.
+
+**[TODO : More about this]**
+
+
+
+
+
+## Arrays & Slices
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	grades := [3]int{44,55,66}
+	//grades := [...]int{44,55,66}
+  //var students [3]string
+	fmt.Printf("%v\n", grades)
+}
+
+```
+
+```
+[44 55 66]
+
+Program exited.
+```
+
+Arrays are laid contiguous way in memory (like C).
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var students [3]string
+	fmt.Printf("%v\n", students)
+	students[0] = "Aditya"
+	students[1] = "Rohit"
+	fmt.Printf("%v\n", students)
+}
+```
+
+```
+[  ]
+[Aditya Rohit ]
+
+Program exited.
+```
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var identityMatrix [3][3]int = [3][3]int{ [3]int{1,0,0}, [3]int{0,1,0}, [3]int{0,0,1} }
+	fmt.Printf("%v\n",identityMatrix)
+}
+
+```
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var identityMatrix [3][3]int
+	identityMatrix[0] = [3]int{1,0,0}
+	identityMatrix[1] = [3]int{0,1,0}
+	identityMatrix[2] = [3]int{0,0,1}
+	fmt.Printf("%v\n",identityMatrix)
+}
+
+```
+
+Go will copy the whole array over. Pass by value
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	a := [...]int{1,2,3}
+	b := a
+  //copy by value. use pointers b := &a
+	b[1] = 5
+	fmt.Println(a)
+	fmt.Println(b)
+}
+```
+
+```
+[1 2 3]
+[1 5 3]
+
+Program exited.
+```
+
+Slices are like Arrays but not like Arrays :-P
+
+Slices are reference types unlike arrays.
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	a := []int{1,2,3,4,5,6,7,8,9,10}
+	b := a[:]
+	c := a[3:]
+	d := a[:6]
+	e := a[3:6]
+
+	//All these slices are pointing to the same underlying array
+	a[5] = 42
+
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
+	fmt.Println(d)
+	fmt.Println(e)
+}
+
+```
+
+```
+[1 2 3 4 5 42 7 8 9 10]
+[1 2 3 4 5 42 7 8 9 10]
+[4 5 42 7 8 9 10]
+[1 2 3 4 5 42]
+[4 5 42]
+
+Program exited.
+```
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	a := make([]int, 3, 100)
+	fmt.Println(a)
+	fmt.Println(len(a))
+	fmt.Println(cap(a))
+}
+
+```
+
+```
+[0 0 0]
+3
+100
+
+Program exited.
+```
+
+Underlying arrays.
+
+```go
+package main
+import (
+	"fmt"
+)
+
+func main() {
+	a := []int{1,2,3}
+	fmt.Println(a)
+	fmt.Println(len(a))
+	fmt.Println(cap(a))
+}
+```
+
+```
+[1 2 3]
+3
+3
+
+Program exited.
+```
 
