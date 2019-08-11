@@ -296,11 +296,273 @@ func main() {
 Program exited.
 ```
 
-[**TODO : Runes etc**]
+**Aliasing a variable**
+
+Defining an alias (an alternate name for a type) >May improve clarity 
+
+``` go
+type Celcius float64
+type IDNum int
+var temp Celcius
+var pid IDNum
+```
+
+Initializing variables in Declarations
+
+```go
+var x int = 100
+var x = 100 //(will infer the type automatically)
+```
+
+Unitialized variables has a zero value
+
+```go
+var x int // x = 0
+var x string //x=""
+```
+
+Can perform declaration and intialization together with the := operators Variable is declared as type of expression on the right hand side.
+
+```go
+x := 100
+```
+
+
+
+## Data Types & Pointers
+
+Different lengths and signs - int8, int16, int32, int64 (and uint8 etc. etc. for unsigned)
+
+```
+var x int
+```
+
+
+
+## Data Types & Pointers
+
+A pointer is an adress to some data in memory. & operator returns the address of a variable/function. * operator dereferences - returns the data at that address (much like C). 
+
+```go
+var x int = 1
+var y int //Default initialize
+var ip *int //ip is the pointer to an integer
+
+ip = &x //ip now points to x
+y = *ip //y is now 1
+```
+
+Alternate way to create a variable
+
+new() function creates a variable and returns a pointer to the variable. Variable is initiialized to zero.
+
+```go
+ptr := new(int)
+*ptr = 3
+```
+
+
+
+## Variable Scope
+
+What is scope ? The places in code where variable can be accessed. In go scoping is done through blocks.
+
+A sequence of declarations and statements within matching brackets {} . Including function definitions. Hierarchy of blocks. There are implicit blocks also.
+
+Universe block - all Go source
+
+Package block - all source in a package
+
+File block - all source in a file. a package can have many files. a package block and many file blocks.
+
+"if" ,"for", "switch" - all code inside the statement
+
+Clause in "switch" or "select" - individual clauses, each get a block.
+
+**Lexical scoping**
+
+How variable references are resolved **(variable resolution)**. Go is lexically scoped using blocks.
+
+b(i) >= b(j) if b(j) is defined inside b(i)
+
+"defined inside" is transitive.
+
+Variable is accessible from a block b(j) if - Variable is declared in block(i) , b(i) >= b(j)
+
+
+
+## Deallocating Space & Garbage Collection
+
+When a variable is not needed. It should be deallocated.
+
+1. Memory space is made available.
+
+Otherwise, we will eventually run out of memory.
+
+Each call f() creates an integer.(if an integer is declared inside the function). Once the function call ends, you don't need that space.  You need to deallocate. If you dont do that, it is called a memory leak.
+
+**Stack vs Heap**
+
+```go
+var x = 4 //Heap
+
+func f(){
+	fmt.Printf("%d", x)
+}
+func g(){
+	fmt.Printf("%d", x)
+}
+```
+
+```go
+func f(){
+  var x = 4 //Stack
+  fmt.Printf("%d", x)
+}
+func g(){
+	fmt.Printf("%d", x)
+}
+```
+
+Stack is dedicated to function calls.
+
+ 	1. Local variables are stored here. Deallocated after function completes. 
+
+Heap on the other hand is the persistent area of memory. Data on heap doesn't go away. You have to explicitly deallocate it. Manual deallocation - Data on heap must be deallocated once it is done being used. In most compiled languages (like C) it is done manually.
+
+```c
+//In C, you have to do that manually. Error prone but it is fast.
+x = malloc(32);
+free(x);
+```
+
+**Pointers and Deallocation**
+
+Hard to determine when a variable is no longer in use.
+
+Garbage collection is in interpreted language like Java or Python Interpreter. Keeps track of pointers and and when there are no longer in use. Only when all references are gone.
+
+Easy on the programmer. It is a slow process. 
+
+**Go is special. It is a compiled language and has garbage collection built into it.**
+
+Implementation is fast. Compiler determines stack vs heap.
+
+Garbage collection in the background. Very little performance hit. 
+
+## Types
+
+Different lengths and signs - int8, int16, int32, int64 (and uint8 etc. etc. for unsigned - bigger magnitude)
+
+```
+var x int
+```
+
+float32 - 6 digits of precision
+
+float64 - 15 digits of precision (more preferred)
+
+```go
+var x float64 = 123.45
+var y float64 = 1.2345e2
+```
+
+Complex numbers
+
+```go
+var z complex128 = complex(2,3)
+```
+
+**ASCII and Unicode**
+
+ASCII was first one. Each character is associated with an (7) 8-bit number. A=0x41
+
+8-bit codes are sufficient for english.
+
+But not for say for example - chinese
+
+Unicode is 32-bit character code.
+
+UTF-8 is a like a subset of unicode. It is a variable length code.
+
+8 bit UTF-8 codes are same as ASCII. 
+
+Default in Go is UTF-8. Code points - unicode characters. **A Rune** = Code Point in Go
+
+**Strings**
+
+Each byte is a rune representing a UTF-8 code point.
+
+Sequence of arbitrary bytes. 1. Read only and 2.Often meant to be printed
+
+String literal = notated by double quotes. Each characters is a rune - a UTF-8 code point.
+
+**Unicode package**
+
+Runes are divided into many different categories. Provides a set of functions to test categories of runes.
+
+```go
+//All Boolean
+IsDigit(r rune)
+IsSpace(r rune)
+IsLetter(r rune)
+IsLower(r rune)
+IsPunct(r rune)
+
+//Conversions
+ToUpper(r rune)
+ToLower(r rune)
+```
+
+IsSpac
+
+**Strings package**
+
+Functions to manipulate UTF-8 encoded strings.
+
+```go
+//String Search Functions
+Compare(a,b) //0 , -1, 1
+Contains(s, substr)
+HasPrefix(s, prefix)
+Index(s, substr) //Returns the index of first occurence
+
+//Strings are immutable, but modified strings are returned.
+Replace(s, old, new, n) //First n instances to be replaced
+TrimSpace(s) //Get rid of spaces
+```
+
+Strconv package
+
+Conversions to and from string representation of basic data types
+
+```go
+atoi(s)
+itoa(i)
+FormatFloat //Converts float to string
+ParseFloat //Converts string to float
+```
+
+
+
+## Type Conversions
+
+Most binary operations need operands of the same type. Including assignments.
+
+```go
+var x int32 = 1
+var y int64 = 2
+x = y // Will fail
+x = int32(y) // Will work
+```
+
+T() operation does the conversions.
 
 
 
 ## Constants
+
+Expressions whose value is known at compile time.
 
 ```go
 package main
@@ -414,6 +676,10 @@ func main() {
 Program exited.
 ```
 
+**iota**
+
+Generate set of related but distinct constants. Often represents a property which has several distinct positive values.
+
 iota is enumerated constant
 
 Special symbol iota allows related constans to be created easily. Iota starts at 0 in each const block and increments by one. Watch out of constant values that match zero values for variables. 
@@ -442,6 +708,7 @@ import (
 	"fmt"
 )
 
+//For example Days of Week or Month
 const (
 	a = iota
 	b = iota
@@ -478,13 +745,32 @@ const (
 
 Types constants work like immutable variables. Can interoperate only with same type. Untyped constants operate like literals.
 
-**[TODO : More about this]**
+```go
+type Grades int
+const (
+	A Grades = iota
+	B
+	C
+	D
+	E
+)
+```
 
-
+Each constant is assigned to a unique integer. Starts at 1 and increments.
 
 
 
 ## Arrays & Slices
+
+Key thing about arrays - Arrays are of fixed length. You know it at compile time.
+
+Array Literals
+
+```go
+//Array Literal
+//... for size in array literal infers size from number of initializers
+var x [5]int = [5]{1,2,3,4,5}
+```
 
 ```go
 package main
@@ -590,9 +876,28 @@ func main() {
 Program exited.
 ```
 
-Slices are like Arrays but not like Arrays :-P
+**Iterating through array**
 
-Slices are reference types unlike arrays.
+```go
+x := [3]{1,2,3}
+
+//Range returns two values - index and element at index
+for i,v in range x {
+	fmt.Println("%i, %v\n",i,v)
+}
+```
+
+**Slices**
+
+You don't see slices in other languages. Most of the times slices are used instead of arrays because they are flexible. **Slice is a window into an underlying array.**
+
+Slices are like Arrays but not like Arrays :-P . Slices are reference types unlike arrays.
+
+Variable size, up to the whole array. Two properties of slice
+
+1. Pointer indicates the start of the slice
+2. Length is the number of elements in the slice
+3. Capacity is the maximum number of elements in the slice.
 
 ```go
 package main
@@ -676,5 +981,170 @@ func main() {
 3
 
 Program exited.
+```
+
+```go
+arr := [...]string{"a","b","c","d","e","f","g"}
+s1 := {1,3}
+s2 := {2,5}
+```
+
+len() and cap() - length and capacity of a slice.
+
+writing to a slice writes the underlying array. Overlapping slices can point to same elements in the underlying arrays.
+
+**Slice literals**
+
+Can be used to initialize a slice. Creates the underlying array and creates a slice to reference it. Slice points to the start of the array. Length is the capacity. Slice will refer to the entire underlying array.
+
+```go
+sli := []int{1,2,3}
+```
+
+**Make**
+
+Create a slice (and array) using
+
+```go
+//2 argument version - specify type and length/capacity
+sli := make([]int , 10)
+
+//3 argument version - specify length and capacity (15 is capacity)
+sli := make([]int, 10, 15)
+```
+
+Size of the slice can be increased by the append function. Adds elements to the end of the slice. Inserts into underlying array. Increases the size of the array if necessary (there is a time penalty though).
+
+```go
+sli = make([]int, 0 , 3)
+sli = append(sli,100)
+```
+
+
+
+## Maps
+
+Map is golang implementation of Hash Table
+
+```go
+var idMap map[string]int
+idMap = make(map[string]int)
+```
+
+Map Literal
+
+```go
+idMap := map[string]int{"aditya":123, "rohit":234}
+```
+
+Accessing
+
+```go
+fmt.Println(idMap["aditya"])
+```
+
+Adding or editing
+
+```go
+idMap["jane"] = 126
+```
+
+Delete
+
+```go
+delete(idMap,"aditya")
+```
+
+Two value assignment tests for existence of the key
+
+```go
+//id = value, p will be boolean = true if the key is in the map
+id,p := idMap["joe"]
+```
+
+len() returns the number of key value pairs in the map
+
+iterate through the map
+
+```go
+for key, val := range idMap{
+	fmt.Println(key, val)
+}
+```
+
+
+
+## Struct
+
+Aggregate data type. 
+
+```go 
+type struct Person {
+	name string
+	addr string
+	phone string
+}
+var p1 Person
+p1.name = "Aditya"
+p2 := new(Person) //All initialized to zero-values
+```
+
+Struct Literal
+
+```go
+p1 := Person (name: "Joe", addr: "Chhatarpur", phone: "123")
+```
+
+
+
+
+
+## Control Flow
+
+```go
+if x % 2 == 0 {
+	fmt.Println("Even")
+} else {
+  fmt.Println("Odd")
+}
+```
+
+```go
+//No need to put a break like C. It will automatically break
+switch x{
+	case 1: 
+		fmt.Println("Case1")
+	case 2: 
+		fmt.Println("Case2")
+	default: 
+		fmt.Println("Default")
+}
+```
+
+```go
+//Tagless switch. First case whose expression which evaluates to boolean.
+switch {
+	case x == 1:
+		fmt.Println("Case1")
+	case x == 2:
+		fmt.Println("Case2")
+	case default:
+		fmt.Println("Default")
+}
+```
+
+Break and continue are also control flow much like C.
+
+
+
+## Scan
+
+Scan reads user input. Takes a pointer as an argument. Typed data is written to pointer. Returns the number of scanned items.
+
+```go
+var appleNum int
+fmt.Printf("Number of apples ?")
+num, err := fmt.Scan(&appleNum)
+fmt.Printf(appleNum)
 ```
 
