@@ -1079,7 +1079,7 @@ for key, val := range idMap{
 Aggregate data type. 
 
 ```go 
-type struct Person {
+type Person struct{
 	name string
 	addr string
 	phone string
@@ -1148,3 +1148,68 @@ num, err := fmt.Scan(&appleNum)
 fmt.Printf(appleNum)
 ```
 
+
+
+## JSON
+
+JSON Mashalling - generating JSON representation from an object.
+
+```go
+p1 := Person(name : "joe", addr : "c245", phone : "222")
+barr, err := json.Marshal(p1)
+```
+
+Marshal() returns JSON representation as []byte
+
+Unmarshalling
+
+```go
+var p2 Person
+err := json.Unmarshal(barr, &p2)
+```
+
+
+
+## File
+
+```go
+//dat is a []byte filled with contents of entire file.
+//Explicit open/close is not needed
+//Can be an issue with large files.
+dat , e := ioutil.ReadFile("test.txt")
+
+//Write file
+dat = "Hello World"
+err := ioutil.WriteFile("outfile.txt", dat, 0777)
+```
+
+os package
+
+os.open() - opens a file and returns a file descriptor
+
+os.close() - closes the file
+
+os.read() - reads from a file into a []byte
+
+Fills the byte array. Control the amount you want to read.
+
+```go
+//Reads and fills barr
+//Read, returns the number of bytes read
+//May be less than []byte length
+f, err := os.Open("data.txt")
+barr :=  make([]byte, 10)
+nb, err := f.Read(barr)
+f.Close()
+```
+
+```go
+f, err := os.Create("outfile.txt")
+barr := []{1,2,3}
+nb, err := f.Write(barr)
+nb, err := f.WriteString("Hi")
+```
+
+WriteString() - writes a string
+
+Write() - Writes a byte array - any unicode sequence
