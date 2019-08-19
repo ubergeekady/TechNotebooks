@@ -5,12 +5,13 @@ docker run hello-world
 docker ps
 docker ps --all
 
-docker run = docker create + docker start
+//docker run = docker create + docker start
+docker run hello-world
 docker create hello-world
 0578a574e3c39daf428e2fcc076f01dfe48682ca5188596437103ee6f63cf8f7
 docker start -a 0578a574e3c39daf428e2fcc076f01dfe48682ca5188596437103ee6f63cf8f7
 
--a means watch for output from the container and print it out to my console
+//"-a" means watch for output from the container and print it out to my console
 ```
 
 ```
@@ -50,7 +51,7 @@ Running redis-cli inside the container
 
 docker exec -it f6948fdbee56 redis-cli
 
--i map our terminal to the standard IO of redis-cli
+"-i" map our terminal to the standard IO of redis-cli
 
 docker exec -it f6948fdbee56 sh
 #cd /
@@ -85,6 +86,7 @@ CMD ["redis-server"]
 ```
 docker build .
 Successfully built 78795007f37d
+
 docker run 78795007f37d
 
 To naming/tagging the build
@@ -93,7 +95,7 @@ docker build -t adysingh1989/redis:latest .
 docker run adysingh1989/redis
 ```
 
-**We can also run a container, go inside it and manually setup. Then create an image out of the container.**
+**We can also run a container, go inside it and manually setup. Then create an image out of the running container.**
 
 ```
 docker run -it alpine sh
@@ -103,7 +105,7 @@ docker ps
 docker commit -c 'CMD ["redis-server"]' 89c37e166a23
 ```
 
-## Building a Node Repository
+## Building a Node App Image
 
 **package.json**
 
@@ -137,7 +139,7 @@ app.listen(8080, () =>{
 **Dockerfile**
 
 ```
-FROM node:alpine //alpine is the small and compact as possible. Other ones will be larger in size
+FROM node:alpine //alpine is the small and compact as possible. Other ones will be larger in size. Search dockerhub.
 RUN npm install
 CMD ["npm", "start"]
 ```
@@ -177,3 +179,187 @@ Successfully built 272b67e2d712
 MacBooks-MBP:simpleweb macbookpro$ 
 ```
 
+**New Dockerfile with copied files**
+
+```
+FROM node:alpine
+COPY ./ ./    //Current working directory to current working directory of the container.
+RUN npm install
+CMD ["npm", "start"]
+```
+
+```
+MacBooks-MBP:simpleweb macbookpro$ docker build -t adysingh1989/simpleweb .
+Sending build context to Docker daemon  4.096kB
+Step 1/4 : FROM node:alpine
+ ---> eaeb7e99eabd
+Step 2/4 : COPY ./ ./
+ ---> Using cache
+ ---> 3ab2ffbffe66
+Step 3/4 : RUN npm install
+ ---> Using cache
+ ---> 3316cf28a192
+Step 4/4 : CMD ["npm", "start"]
+ ---> Using cache
+ ---> 78b1babf471b
+Successfully built 78b1babf471b
+Successfully tagged adysingh1989/simpleweb:latest
+MacBooks-MBP:simpleweb macbookpro$ 
+```
+
+```
+MacBooks-MBP:simpleweb macbookpro$ docker run adysingh1989/simpleweb
+
+> @ start /
+> node index.js
+
+Listening on port 8080
+
+
+```
+
+But localhost:8080 wont work. 
+
+Container port mapping.
+
+If someone sends a request to my computer on port 8080, map it to port 8080 of the container.
+
+We do not setup port forwarding in the Dockerfile. It is a runtime thing.
+
+```
+//To go inside the shell of the container and not run the default command
+docker run -it adysingh1989/simpleweb sh
+```
+
+```
+macbookpro$ docker run -p 8080:8080 adysingh1989/simpleweb
+```
+
+```
+FROM node:alpine
+WORKDIR /usr/app
+COPY ./ ./
+RUN npm install
+CMD ["npm", "start"]
+```
+
+```
+docker build -t adysingh1989/simpleweb .
+docker run -p 8080:8080 adysingh1989/simpleweb
+
+docker exec -it ba804b107b57 sh
+
+/usr/app # ls
+Dockerfile         index.js           node_modules       package-lock.json  package.json
+/usr/app # 
+```
+
+
+
+## Using Docker-Compose to Setup 2 linked containers
+
+**index.js**
+
+```js
+const express = require('express');
+const redis = require('redis');
+
+const app = express();
+const client = redis.createClient();
+client.set('visits', 0);
+
+app.get('/', (req, res) => {
+  client.get('visits', (err, visits) => {
+    res.send('Number of visits is ' + visits);
+    client.set('visits', parseInt(visits) + 1);
+  });
+});
+
+app.listen(8081, () => {
+  console.log('Listening on port 8081');
+});
+```
+
+**package.json**
+
+```json
+{
+  "dependencies": {
+    "express": "*",
+    "redis": "2.8.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
+```
+
+**Dockerfile**
+
+```
+FROM node:alpine
+WORKDIR /usr/app
+COPY ./package.json ./
+RUN npm install
+COPY ./ ./
+CMD ["npm", "start"]
+```
+
+Start redis container
+
+```
+docker run redis
+```
+
+Better to use docker-compose. 
+
+docker-compose.yml
+
+```yaml
+version: '3'
+services: 
+  redis-server:
+    image: 'redis'
+  node-app:
+    build: .
+    ports:
+      - "4001:8081"
+```
+
+Docker compose will have both services free access to each other.
+
+**index.js again**
+
+```js
+const client = redis.createClient({
+	host: 'redis-server',
+	port: 6379
+});
+```
+
+```
+docker-compose up --build
+docker-compose down
+docker-compose ps
+```
+
+Restart policies
+
+```
+version: '3'
+services: 
+  redis-server:
+    image: 'redis'
+  node-app:
+  	restart: always
+    build: .
+    ports:
+      - "4001:8081"
+```
+
+```
+restart: "no"
+restart: always
+restart: on-failure
+restart: unless-stopped
+```
