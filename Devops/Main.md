@@ -1,3 +1,5 @@
+## Docker & Kubernetes : Creating Production Grade Workflows
+
 ```
 docker version
 docker run hello-world
@@ -139,7 +141,7 @@ app.listen(8080, () =>{
 **Dockerfile**
 
 ```
-FROM node:alpine //alpine is the small and compact as possible. Other ones will be larger in size. Search dockerhub.
+FROM node:alpine //alpine is  small and compact as possible. Other ones will be larger in size. Search dockerhub.
 RUN npm install
 CMD ["npm", "start"]
 ```
@@ -363,3 +365,53 @@ restart: always
 restart: on-failure
 restart: unless-stopped
 ```
+
+## Creating Production Grade Workflows (React Example)
+
+```
+create-react-app frontend
+cd frontend
+npm run test
+npm run build
+npm run serve
+```
+
+create new Dockerfile.dev (for development environment)
+
+```
+FROM node:alpine
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+CMD ["npm", "run", "start"]
+```
+
+```
+docker build -f Dockerfile.dev .
+```
+
+Might want to delete node_modules to make it smaller (can be reinstated with npm install)
+
+```
+docker run -p 3000:3000 3f745de211a3
+```
+
+Goto localhost. Phew
+
+Edit open src/app.js and edit some text. Refresh the localhost. But it won't update.
+
+Docker volume, we are essentially setting up a mapping from a folder inside the container to a file or folder outside the container.
+
+```
+docker run -p 3000:3000 -v $(pwd):/app 057bd5c72ec1
+```
+
+This should throw an error. The node_modules folder inside the container got overriden by this mapping.
+
+```
+docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app 196ba1d36130
+```
+
+The -v command without the colon mapping means don't try to map that particular folder.
+
