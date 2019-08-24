@@ -728,3 +728,184 @@ services:
       - ./worker:/app
 ```
 
+## CI Workflow for multiple images
+
+Create production dockerfile in worker and server folders with npm start command (only difference).
+
+Dockerfile for nginx folder will be the same
+
+Dockerfile for client folder
+
+```
+FROM node:alpine as builder
+WORKDIR '/app'
+COPY ./package.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+FROM nginx
+EXPOSE 3000
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/build /usr/share/nginx/html
+```
+
+client/nginx (another nginx for serving client/react static files)
+
+client/nginx/default.conf
+
+```
+server {
+  listen 3000;
+ 
+  location / {
+    root /usr/share/nginx/html;
+    index index.html index.htm;
+    try_files $uri $uri/ /index.html;  <<------Add this!!!!
+  }
+}
+```
+
+Push to github.
+
+**.travis.yml**
+
+```yaml
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t adysingh1989/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true adysingh1989/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t adysingh1989/multi-client ./client
+  - docker build -t adysingh1989/multi-nginx ./nginx
+  - docker build -t adysingh1989/multi-server ./server
+  - docker build -t adysingh1989/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push adysingh1989/multi-client
+  - docker push adysingh1989/multi-nginx
+  - docker push adysingh1989/multi-server
+  - docker push adysingh1989/multi-worker
+```
+
+## Multi-Container Deployment To AWS Elastic Container Service
+
+**Dockerrun.aws.json**
+
+```json
+{
+	"AWSEBDockerrunVersion": 2,
+	"containerDefinitions": [
+		{
+			"name": "client",
+			"image": "adysingh1989/multi-client",
+			"hostname": "client",
+			"essential": false,
+      "memory": 128
+		},
+		{
+			"name": "server",
+			"image": "adysingh1989/multi-server",
+			"hostname": "api",
+			"essential": false,
+      "memory": 128
+		},
+		{
+			"name": "worker",
+			"image": "adysingh1989/multi-worker",
+			"hostname": "worker",
+			"essential": false,
+      "memory": 128
+		},
+		{
+			"name": "nginx",
+			"image": "adysingh1989/multi-nginx",
+			"hostname": "nginx",
+			"essential": true,
+			"portMappings": [
+				{
+					"hostPort": 80,
+					"containerPort": 80
+				}
+			],
+			"links": ["client", "server"],
+      "memory": 128
+		}
+	]
+}
+```
+
+Goto Elastic Beanstalk and create new application with name : docker-react >> Create new environment >> Web server environment >> Platform : "MultiContainer Docker" >> Create and then wait
+
+Create IAM secret keys with permissions to elastic beanstalk.
+
+There is one VPC for every zone. Go to VPC dashboard in AWS. There is default VPC for every region.
+
+Create a security group/firewall rules. There will be one created for the EBS environment. Click on it. Goto inbound rules. 
+
+Goto RDS -> Create DB -> Postgres >> Put the instance identifier, username, password.
+
+Create Redis ElasticCache
+
+Create new security group. Apply to all resources.
+
+Setup environment variables in AWS console
+
+```
+REDIS_HOST=<url>
+REDIS_PORT=6379
+PGUSER=postgres
+PGHOST=<url>
+PGDATABASE=fibvalues
+PGPASSWORD=postgrespassword
+PGPORT=5432
+```
+
+All containers will automatically have access to the environment variables.
+
+modify travis yml
+
+.travis.yml
+
+```yaml
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t adysingh1989/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true adysingh1989/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t adysingh1989/multi-client ./client
+  - docker build -t adysingh1989/multi-nginx ./nginx
+  - docker build -t adysingh1989/multi-server ./server
+  - docker build -t adysingh1989/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push adysingh1989/multi-client
+  - docker push adysingh1989/multi-nginx
+  - docker push adysingh1989/multi-server
+  - docker push adysingh1989/multi-worker
+
+#Change this stuff
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "docker-react"
+  env: "DockerReact-env"
+  bucket_name: "elasticbeanstalk-us-east-2-509296601184"
+  bucket_path: "docker-react"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: 
+    secure: "$AWS_SECRET_KEY"
+```
+
