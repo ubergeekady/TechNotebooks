@@ -1035,3 +1035,159 @@ deploy:
     secure: "$AWS_SECRET_KEY"
 ```
 
+## Setting Up Kubernetes Development Environment
+
+This will start a kubenetes node on macbook -
+
+```
+brew install kubectl
+which kubectl
+//Install virtualbox
+brew cask install minikube
+which minikube
+minikube start
+```
+
+**Docker desktop kubernetes**
+
+#### **macOS**
+
+1. Click the Docker icon in the top macOS toolbar
+
+2. Click Preferences
+
+3. Click "Kubernetes" in the dialog box menu
+
+4. Check the “Enable Kubernetes” box
+
+5. Click "Apply"
+
+6. Click Install to allow the cluster installation (This may take a while).
+
+#### **Usage**
+
+Going forward, any minikube commands run in the lecture videos can be ignored. Also, instead of the IP address used in the video lectures when using minikube, we use localhost.
+
+For example, in the first project where we deploy our simple React app, using minikube we would visit:
+
+192.168.99.101:31515
+
+Instead, when using Docker Desktop's Kubernetes, we would visit: **localhost:31515**
+
+Also, you can skim through the discussion about needing to use the local Docker node in the "Multiple Docker Installations" and "Why Mess with Docker in the Node" lectures (187-189), this only applies to minikube users.
+
+```
+MacBooks-MacBook-Pro:TechNotebooks macbookpro$ minikube status
+host: Stopped
+kubelet: 
+apiserver: 
+kubectl: 
+MacBooks-MacBook-Pro:TechNotebooks macbookpro$ kubectl cluster-info
+Kubernetes master is running at https://kubernetes.docker.internal:6443
+KubeDNS is running at https://kubernetes.docker.internal:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+MacBooks-MacBook-Pro:TechNotebooks macbookpro$ 
+
+```
+
+```
+mkdir simplek8s
+```
+
+Client-pod.yml
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client-pod
+  labels:
+    component: web
+spec:
+  containers:
+    - name: client
+      image: adysingh1989/multi-client
+      ports:
+        - containerPort: 3000
+```
+
+Client-node-port.yml
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-node-port
+spec:
+  type: NodePort
+  ports:
+    - port: 3050
+      targetPort: 3000
+      nodePort: 31515
+  selector:
+    component: web
+```
+
+```
+MacBooks-MacBook-Pro:simplek8s macbookpro$ kubectl apply -f ./client-pod.yaml
+pod/client-pod unchanged
+MacBooks-MacBook-Pro:simplek8s macbookpro$ kubectl apply -f client-node-port.yaml 
+service/client-node-port unchanged
+MacBooks-MacBook-Pro:simplek8s macbookpro$ kubectl get pods
+NAME         READY   STATUS             RESTARTS   AGE
+client-pod   0/1     CrashLoopBackOff   4          3m2s
+MacBooks-MacBook-Pro:simplek8s macbookpro$ 
+
+kubectl get services
+minikube start
+minikube ip
+kubectl get pods
+kubectl get <objecttype>
+kubectl describe pod client-pod
+kubectl delete -f <configfile>
+```
+
+client-deployment.yaml
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels:
+        component: web
+    spec:
+      containers:
+        - name: client
+          image: adysingh1989/multi-client
+          ports:
+            - containerPort: 3000
+```
+
+```
+kubectl apply -f <objectfile>
+kubectl get deployments
+kubectl get pods -o wide
+```
+
+changing image
+
+```
+kubectl set image <objecttype> / <objectname> <containername> = <newimage>
+```
+
+```
+eval $(minikube docker-env) 
+kubectl podname logs
+kubectl exec -it podname sh
+kubectl delete deployment <name>
+```
+
