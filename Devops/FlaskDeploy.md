@@ -11,12 +11,12 @@ nano /etc/hosts
 ```
 127.0.0.1       localhost
 
-172.105.54.8    playstoreapp
+<MACHINEIP>    playstoreapp
 ```
 
 ```
 adduser aditya
-appyfizz
+<PASSWORD>
 adduser aditya sudo
 
 relogin as aditya
@@ -61,7 +61,7 @@ sudo nano /etc/nginx/sites-enabled/playstoreapp
 ```
 server {
         listen 80;
-        server_name IP/DOMAIN;
+        server_name <IP/DOMAIN>;
 
     location / {
         proxy_pass http://localhost:8000;
@@ -123,4 +123,46 @@ sudo touch /var/log/playstoreapp/playstoreapp.err
 sudo touch /var/log/playstoreapp/playstoreapp.out
 sudo supervisorctl reload
 ```
+
+## Database
+
+```
+sudo apt install postgresql postgresql-contrib
+sudo -u postgres createuser --superuser aditya
+sudo -u aditya createdb playstoredb
+
+sudo -i -u postgres
+postgres@playstoreapp:~$ psql
+psql (11.5 (Ubuntu 11.5-0ubuntu0.19.04.1))
+Type "help" for help.
+
+postgres=# \du
+postgres=# ALTER USER aditya WITH PASSWORD '<DBPASSWORD>';
+postgres=# grant all privileges on database playstoredb to aditya;
+
+export PLAYSTORESCRAPPERAPP_DATABASEAPPURL="postgresql://aditya:<DBPASSWORD>@localhost/playstoredb"
+```
+
+NOTE - There is some problem here needs to be fixed. Sometimes you might have to paste the DB url into the init.py file or make it load it from a file and place the file in /etc/settings place.
+
+## For PGAdmin
+
+```
+sudo ufw allow 5432
+sudo ufw enable
+```
+
+```
+Add or edit the following line in your postgresql.conf :
+
+listen_addresses = '*'
+
+Add the following line as the first line of pg_hba.conf. It allows access to all databases for all users with an encrypted password:
+
+# TYPE DATABASE USER CIDR-ADDRESS  METHOD
+host  all  all 0.0.0.0/0 md5
+
+Restart Postgresql after adding this with service postgresql restart or the equivalent command for your setup.
+```
+
 
