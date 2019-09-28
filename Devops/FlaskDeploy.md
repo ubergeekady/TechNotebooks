@@ -102,7 +102,7 @@ sudo apt install supervisor
 ```
 
 ```
-sudo nano /etc/supervisor/conf.d/playstoreapp.conf
+sudo nano /etc/supervisor/conf.d/creditriskapp.conf
 ```
 
 ```
@@ -119,8 +119,9 @@ stdout_logfile=/var/log/playstoreapp/playstoreapp.out
 ```
 
 ```
-sudo touch /var/log/playstoreapp/playstoreapp.err
-sudo touch /var/log/playstoreapp/playstoreapp.out
+mkdir /var/log/creditriskapp
+sudo touch /var/log/creditriskapp/creditriskapp.err
+sudo touch /var/log/creditriskapp/creditriskapp.out
 sudo supervisorctl reload
 ```
 
