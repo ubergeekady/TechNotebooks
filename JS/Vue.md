@@ -59,7 +59,7 @@
         path: location.pathname
       }
     });
-    </script>
+   	</script>
 ```
 
 ```html
