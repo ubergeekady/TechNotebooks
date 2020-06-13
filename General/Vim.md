@@ -147,8 +147,3 @@ y^ - Yank (copy) everything from the cursor to the start of the line.
 yw - Yank (copy) to the start of the next word.
 yiw – Yank (copy) the current word.
 y% - Yank (copy) to the matching character. By default supported pairs are (), {}, and []. Useful to copy text between matching brackets.
-
-
-
-
-
