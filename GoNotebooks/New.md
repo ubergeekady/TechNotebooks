@@ -741,3 +741,325 @@ func main() {
 }
 ```
 
+## Variadic Functions
+
+*A variadic function is a function that accepts a variable number of arguments. If the last parameter of a function definition is prefixed by ellipsis **...**, then the function can accept any number of arguments for that parameter.*
+
+**Only the last parameter of a function can be variadic. We will learn why this is the case in the next section of this tutorial.**
+
+```go
+func hello(a int, b ...int) {  
+}
+```
+
+```go
+hello(1, 2) //passing one argument "2" to b  
+hello(5, 6, 7, 8, 9) //passing arguments "6, 7, 8 and 9" to b  
+```
+
+It is also possible to pass zero arguments to a variadic function.
+
+```lanaguage
+hello(1)  
+```
+
+In the above code, we call `hello` with zero arguments for `b`. This is perfectly fine.
+
+**The way variadic functions work is by converting the variable number of arguments to a slice of the type of the variadic parameter.**
+
+**There is a syntactic sugar which can be used to pass a slice to a variadic function. You have to suffix the slice with ellipsis `...` If that is done, the slice is directly passed to the function without a new slice being created.**
+
+```go
+func main() {  
+    nums := []int{89, 90, 95}
+    find(89, nums...)
+}
+
+func find(num int, nums ...int) {  
+
+```
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+func change(s ...string) {  
+    s[0] = "Go"
+}
+
+func main() {  
+    welcome := []string{"hello", "world"}
+    change(welcome...)
+    fmt.Println(welcome)
+}
+```
+
+What do you think will be the output of the above program? If you think it will be `[Go world]` Congrats! you have understood variadic functions and slices. If you got it wrong, no big deal, let me explain how we get this output.
+
+## Maps
+
+```go
+func main() {  
+    employeeSalary := make(map[string]int)
+    employeeSalary["steve"] = 12000
+    employeeSalary["jamie"] = 15000
+    employeeSalary["mike"] = 9000
+    fmt.Println("employeeSalary map contents:", employeeSalary)
+}
+```
+
+```
+employeeSalary map contents: map[steve:12000 jamie:15000 mike:9000]  
+```
+
+```go
+func main() {  
+    employeeSalary := map[string]int {
+        "steve": 12000,
+        "jamie": 15000,
+    }
+    employeeSalary["mike"] = 9000
+    fmt.Println("employeeSalary map contents:", employeeSalary)
+}
+```
+
+It's not necessary that only [string](https://golangbot.com/strings) types should be keys. All comparable types such as boolean, integer, float, complex, string, ... can also be keys. Even user-defined types such as [structs](https://golangbot.com/structs) can be keys. If you would like to know more about comparable types, please visit http://golang.org/ref/spec#Comparison_operators
+
+The zero value of a map is `nil`. If you try to add elements to a `nil` map, a run-time [panic](https://golangbot.com/panic-and-recover/) will occur. Hence the map has to be initialized before adding elements.
+
+```go
+func main() {  
+    var employeeSalary map[string]int
+    employeeSalary["steve"] = 12000
+}
+```
+
+```
+panic: assignment to entry in nil map
+```
+
+```go
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+        "mike": 9000,
+    }
+    employee := "jamie"
+    salary := employeeSalary[employee]
+    fmt.Println("Salary of", employee, "is", salary)
+}
+```
+
+What will happen if an element is not present? The map will return the zero value of the type of that element. In the case of `employeeSalary` map, if we try to access an element which is not present, the zero value of `int` which is `0` will be returned.
+
+```go
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+    }
+    fmt.Println("Salary of joe is", employeeSalary["joe"])
+}
+```
+
+```go
+value, ok := map[key]  
+```
+
+The above is the syntax to find out whether a particular key is present in a map. If `ok` is true, then the key is present and its value is present in the variable `value`, else the key is absent.
+
+```go
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+    }
+    newEmp := "joe"
+    value, ok := employeeSalary[newEmp]
+    if ok == true {
+        fmt.Println("Salary of", newEmp, "is", value)
+        return
+    }
+    fmt.Println(newEmp, "not found")
+
+}
+```
+
+In the above program, in line no. 13, `ok` will be false since `joe` is not present. Hence the program will print,
+
+```
+joe not found  
+```
+
+```go
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+        "mike":  9000,
+    }
+    fmt.Println("Contents of the map")
+    for key, value := range employeeSalary {
+        fmt.Printf("employeeSalary[%s] = %d\n", key, value)
+    }
+
+}
+```
+
+```
+Contents of the map  
+employeeSalary[mike] = 9000  
+employeeSalary[steve] = 12000  
+employeeSalary[jamie] = 15000 
+```
+
+```go
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,     
+        "mike": 9000,
+    }
+    fmt.Println("map before deletion", employeeSalary)
+    delete(employeeSalary, "steve")
+    fmt.Println("map after deletion", employeeSalary)
+
+}
+```
+
+```
+map before deletion map[steve:12000 jamie:15000 mike:9000]  
+map after deletion map[mike:9000 jamie:15000]
+```
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+type employee struct {  
+    salary  int
+    country string
+}
+
+func main() {  
+    emp1 := employee{
+        salary:  12000,
+        country: "USA",
+    }
+    emp2 := employee{
+        salary:  14000,
+        country: "Canada",
+    }
+    emp3 := employee{
+        salary:  13000,
+        country: "India",
+    }
+    employeeInfo := map[string]employee{
+        "Steve": emp1,
+        "Jamie": emp2,
+        "Mike":  emp3,
+    }
+
+    for name, info := range employeeInfo {
+        fmt.Printf("Employee: %s Salary:$%d  Country: %s\n", name, info.salary, info.country)
+    }
+
+}
+```
+
+```
+Employee: Mike Salary:$13000  Country: India  
+Employee: Steve Salary:$12000  Country: USA  
+Employee: Jamie Salary:$14000  Country: Canada
+```
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,
+    }
+    fmt.Println("length is", len(employeeSalary))
+
+}
+```
+
+Similar to slices, maps are reference types. When a map is assigned to a new variable, they both point to the same internal data structure. Hence changes made in one will reflect in the other.
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    employeeSalary := map[string]int{
+        "steve": 12000,
+        "jamie": 15000,     
+        "mike": 9000,
+    }
+    fmt.Println("Original employee salary", employeeSalary)
+    modified := employeeSalary
+    modified["mike"] = 18000
+    fmt.Println("Employee salary changed", employeeSalary)
+
+}
+```
+
+## Unicode
+
+**[...TO BE WRITTEN...]**
+
+
+
+## Strings
+
+A string is a slice of bytes in Go. Strings can be created by enclosing a set of characters inside double quotes " ". Since a string is a slice of bytes, it's possible to access each byte of a string.
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+func printBytes(s string) {  
+    fmt.Printf("Bytes: ")
+    for i := 0; i < len(s); i++ {
+        fmt.Printf("%x ", s[i])
+    }
+}
+
+func main() {  
+    name := "Hello World"
+    fmt.Printf("String: %s\n", name)
+    printBytes(name)
+}
+
+```
+
+```
+String: Hello World  
+Bytes: 48 65 6c 6c 6f 20 57 6f 72 6c 64  
+```
+
+**%s is the format specifier to print a string.** In line no. 16, the input string is printed. In line no. 9 of the program above, **len(s) returns the number of bytes in the string** and we use a for loop to print those bytes in hexadecimal notation. **%x is the format specifier for hexadecimal.** **%c format specifier is used to print the characters of the string**
+
+These are the Unicode UT8-encoded values of Hello World. A basic understanding of Unicode and UTF-8 is needed to understand strings better.
+
+**[...TO BE WRITTEN...]**
+
