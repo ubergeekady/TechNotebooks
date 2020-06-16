@@ -1,3 +1,7 @@
+[TOC]
+
+
+
 ## Variables, Types and Constants
 
 ```go
@@ -1062,4 +1066,419 @@ Bytes: 48 65 6c 6c 6f 20 57 6f 72 6c 64
 These are the Unicode UT8-encoded values of Hello World. A basic understanding of Unicode and UTF-8 is needed to understand strings better.
 
 **[...TO BE WRITTEN...]**
+
+## Pointers
+
+```go
+func main() {  
+    b := 255
+    var a *int = &b
+    fmt.Printf("Type of a is %T\n", a)
+    fmt.Println("address of b is", a)
+}
+```
+
+The **&** operator is used to get the address of a variable. In line no. 9 of the above program we are assigning the address of `b` to `a` whose type is `*int`. Now a is said to point to b. When we print the value in `a`, the address of `b` will be printed. This program outputs
+
+```
+Type of a is *int  
+address of b is 0x1040a124 
+```
+
+The zero value of a pointer is `nil`.
+
+Go also provides a handy function `new` to create pointers. The `new` function takes a type as argument and returns a pointer to a newly allocated zero value of the type passed as argument.
+
+```go
+func main() {  
+    size := new(int)
+    fmt.Printf("Size value is %d, type is %T, address is %v\n", *size, size, size)
+    *size = 85
+    fmt.Println("New size value is", *size)
+}
+```
+
+```
+Size value is 0, type is *int, address is 0x414020  
+New size value is 85 
+```
+
+Dereferencing a pointer means accessing the value of the variable which the pointer points to. `*a` is the syntax to deference a.
+
+```go
+func main() {  
+    b := 255
+    a := &b
+    fmt.Println("address of b is", a)
+    fmt.Println("value of b is", *a)
+}
+```
+
+```
+address of b is 0x1040a124  
+value of b is 255  
+```
+
+```go
+func main() {  
+    b := 255
+    a := &b
+    fmt.Println("address of b is", a)
+    fmt.Println("value of b is", *a)
+    *a++
+    fmt.Println("new value of b is", b)
+}
+```
+
+In line no. 12 of the above program, we increment the value pointed by a by 1 which changes the value of b *since a points to b*. Hence the value of b becomes 256. The output of the program is
+
+```
+address of b is 0x1040a124  
+value of b is 255  
+new value of b is 256 
+```
+
+```go
+func change(val *int) {  
+    *val = 55
+}
+func main() {  
+    a := 58
+    fmt.Println("value of a before function call is",a)
+    b := &a
+    change(b)
+    fmt.Println("value of a after function call is", a)
+}
+```
+
+In the above program, in line no. 14 we are passing the pointer variable b which holds the address of a to the function `change`. Inside `change` function, value of a is changed using dereference in line no 8. This program outputs,
+
+```
+value of a before function call is 58  
+value of a after function call is 55
+```
+
+It is perfectly legal for a function to return a pointer of a local variable. The Go compiler is intelligent enough and it will allocate this variable on the heap.
+
+```go
+func hello() *int {  
+    i := 5
+    return &i
+}
+func main() {  
+    d := hello()
+    fmt.Println("Value of d", *d)
+}
+```
+
+In line no. 9 of the program above, we return the address of the local variable `i` from the function `hello`. **The behavior of this code is undefined in programming languages such as C and C++ as the variable `i` goes out of scope once the function `hello` returns. But in the case of Go, the compiler does a escape analysis and allocates `i` on the heap as the address escapes the local scope.** Hence this program will work and it will print,
+
+```
+Value of d 5  
+```
+
+**Do not pass a pointer to an array as a argument to a function. Use slice instead.**
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+func modify(arr *[3]int) {  
+    (*arr)[0] = 90
+}
+
+func main() {  
+    a := [3]int{89, 90, 91}
+    modify(&a)
+    fmt.Println(a)
+}
+```
+
+In line no. 13 of the above program, we are passing the address of the array `a` to the `modify` function. In line no.8 in the `modify` function we are dereferencing arr and assigning `90` to the first element of the array. This program outputs `[90 90 91]`
+
+**a[x] is shorthand for (\*a)[x]. So (\*arr)[0] in the above program can be replaced by arr[0]**. Lets rewrite the above program using this shorthand syntax.
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+func modify(arr *[3]int) {  
+    arr[0] = 90
+}
+
+func main() {  
+    a := [3]int{89, 90, 91}
+    modify(&a)
+    fmt.Println(a)
+}
+```
+
+This program also outputs [90 90 91]
+
+Although this way of passing a pointer to an array as a argument to a function and making modification to it works, it is not the idiomatic way of achieving this in Go. We have slices for this.
+
+Lets rewrite the same program using slices.
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+func modify(sls []int) {  
+    sls[0] = 90
+}
+
+func main() {  
+    a := [3]int{89, 90, 91}
+    modify(a[:])
+    fmt.Println(a)
+}
+```
+
+In line no.13 of the program above, we pass a slice to the `modify` function. The first element of the slice is changed to `90` inside the `modify` function. This program also outputs `[90 90 91]`. **So forget about passing pointers to arrays around and use slices instead :)**. This code is much more clean and is idiomatic Go :).
+
+## Structs
+
+```go
+type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+}
+```
+
+```go
+type Employee struct {  
+    firstName, lastName string
+    age                 int
+}
+//Not recommended
+```
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+    salary    int
+}
+
+func main() {
+
+    //creating struct specifying field names
+    emp1 := Employee{
+        firstName: "Sam",
+        age:       25,
+        salary:    500,
+        lastName:  "Anderson",
+    }
+
+    //creating struct without specifying field names - not recommended
+    emp2 := Employee{"Thomas", "Paul", 29, 800}
+
+    fmt.Println("Employee 1", emp1)
+    fmt.Println("Employee 2", emp2)
+}
+```
+
+**In line 25. of the above program, `emp2` is defined by omitting the field names. In this case, it is necessary to maintain the order of fields to be the same as specified in the struct declaration. Please refrain from using this syntax since it makes it difficult to figure out which value is for which field.**
+
+Anon structs
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+func main() {  
+    emp3 := struct {
+        firstName string
+        lastName  string
+        age       int
+        salary    int
+    }{
+        firstName: "Andreah",
+        lastName:  "Nikola",
+        age:       31,
+        salary:    5000,
+    }
+
+    fmt.Println("Employee 3", emp3)
+}
+```
+
+```
+Employee 3 {Andreah Nikola 31 5000}  
+```
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+type Employee struct {  
+    firstName string
+    lastName  string
+    age       int
+    salary    int
+}
+
+func main() {  
+    emp6 := Employee{
+        firstName: "Sam",
+        lastName:  "Anderson",
+        age:       55,
+        salary:    6000,
+    }
+    fmt.Println("First Name:", emp6.firstName)
+    fmt.Println("Last Name:", emp6.lastName)
+    fmt.Println("Age:", emp6.age)
+    fmt.Printf("Salary: $%d\n", emp6.salary)
+    emp6.salary = 6500
+    fmt.Printf("New Salary: $%d", emp6.salary)
+}
+```
+
+```
+First Name: Sam  
+Last Name: Anderson  
+Age: 55  
+Salary: $6000  
+New Salary: $6500
+```
+
+When a struct is defined and it is not explicitly initialized with any value, the fields of the struct are assigned their zero values by default.
+
+It is also possible to specify values for some fields and ignore the rest. In this case, the ignored fields are assigned zero values.
+
+```go
+    emp5 := Employee{
+        firstName: "John",
+        lastName:  "Paul",
+    }
+```
+
+```go
+func main() {  
+    emp8 := &Employee{
+        firstName: "Sam",
+        lastName:  "Anderson",
+        age:       55,
+        salary:    6000,
+    }
+    fmt.Println("First Name:", (*emp8).firstName)
+    fmt.Println("Age:", (*emp8).age)
+}
+```
+
+**The Go language gives us the option to use `emp8.firstName` instead of the explicit dereference `(*emp8).firstName` to access the `firstName` field.**
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+type Address struct {  
+    city  string
+    state string
+}
+
+type Person struct {  
+    name    string
+    age     int
+    address Address
+}
+
+func main() {  
+    p := Person{
+        name: "Naveen",
+        age:  50,
+        address: Address{
+            city:  "Chicago",
+            state: "Illinois",
+        },
+    }
+
+    fmt.Println("Name:", p.name)
+    fmt.Println("Age:", p.age)
+    fmt.Println("City:", p.address.city)
+    fmt.Println("State:", p.address.state)
+}
+```
+
+### Promoted fields
+
+Fields that belong to an anonymous struct field in a struct are called promoted fields since they can be accessed as if they belong to the struct which holds the anonymous struct field. I can understand that this definition is quite complex so let's dive right into some code to understand this :).
+
+```go
+type Address struct {  
+    city string
+    state string
+}
+type Person struct {  
+    name string
+    age  int
+    Address
+}
+```
+
+In the above code snippet, the `Person` struct has an anonymous field `Address` which is a struct. Now the fields of the `Address` namely `city` and `state` are called promoted fields since they can be accessed as if they are directly declared in the `Person` struct itself.
+
+```go
+package main
+
+import (  
+    "fmt"
+)
+
+type Address struct {  
+    city  string
+    state string
+}
+type Person struct {  
+    name string
+    age  int
+    Address
+}
+
+func main() {  
+    p := Person{
+        name: "Naveen",
+        age:  50,
+        Address: Address{
+            city:  "Chicago",
+            state: "Illinois",
+        },
+    }
+
+    fmt.Println("Name:", p.name)
+    fmt.Println("Age:", p.age)
+    fmt.Println("City:", p.city)   //city is promoted field
+    fmt.Println("State:", p.state) //state is promoted field
+}
+```
+
+**Structs are value types and are comparable if each of their fields are comparable. Two struct variables are considered equal if their corresponding fields are equal.**
+
+**Struct variables are not comparable if they contain fields that are not comparable** 
 
